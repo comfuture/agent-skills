@@ -1,0 +1,21 @@
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.pyc
+__pycache__/
+
+# Keep this repository as an allowlisted skill/config source, not a raw
+# ~/.codex mirror.
+auth.json
+settings.json
+config.toml
+cache/
+sessions/
+attachments/
+process_manager/
+ambient-suggestions/
+memories/
+memories_extensions/
+plugins/
+.tmp/

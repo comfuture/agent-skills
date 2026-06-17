@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Creator"
+  short_description: "Draft evidence-backed implementation issues"
+  default_prompt: "Use $issue-creator to research context and create a high-quality GitHub issue."
