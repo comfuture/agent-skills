@@ -1,93 +1,171 @@
 # Agent Skills
 
-Private, allowlisted source for portable Codex skills that are personally
-maintained and not already provided by Codex, OpenAI-curated plugins, or system
-skill bundles.
+Portable Agent Skills for GitHub issue creation and issue-to-PR workflows.
 
-## Chosen Layout
+This repository follows the open [Agent Skills specification](https://agentskills.io/specification):
+each skill is a folder under `skills/` with a required `SKILL.md`, YAML
+frontmatter, and optional supporting files such as `references/`, `scripts/`,
+`assets/`, or agent-specific metadata.
 
-This repository intentionally stays closer to `comfuture/agent-skills` than a
-full `comfuture/codex-settings` mirror.
+## Skills
 
-- Each immediate directory with a `SKILL.md` is a personally managed Codex
-  skill.
-- `managed-skills.txt` is the default install/export allowlist.
-- `AGENTS.md` is the only managed global Codex instruction at the moment.
-- `scripts/install.sh` copies managed content into `~/.codex`.
-- `scripts/export-from-codex.sh` copies selected local skills back into this
-  repository before committing.
+- `issue-creator`: Research context and draft or create implementation-ready
+  GitHub issues.
+- `gh-implement-issue`: Implement a GitHub issue through a validated
+  branch-to-PR workflow.
 
-Do not clone this repository directly as `~/.codex`. The real `~/.codex`
-directory contains auth, machine state, caches, session history, generated
-plugin data, browser integration state, and memories. Those should not be
-versioned here unless they are first turned into scrubbed templates.
+These are personally maintained skills. The repository intentionally excludes
+copies of skills already provided by Codex, Claude Code, OpenAI-curated plugins,
+or other agent runtimes.
 
-Do not vendor OpenAI/system/plugin-provided skills here just because they exist
-under the local `~/.codex/skills` directory. If Codex already provides a skill
-through the runtime, a plugin, or an installable bundle, use that source instead
-of carrying a stale copy in this repository.
+## Repository Layout
 
-## Current Managed Skills
+```text
+.
+├── .claude-plugin/
+│   ├── marketplace.json
+│   └── plugin.json
+├── skills/
+│   ├── gh-implement-issue/
+│   │   ├── SKILL.md
+│   │   └── agents/openai.yaml
+│   └── issue-creator/
+│       ├── SKILL.md
+│       ├── agents/openai.yaml
+│       └── references/
+├── scripts/
+│   ├── export-from-codex.sh
+│   └── install.sh
+├── AGENTS.md
+├── LICENSE
+├── README.md
+└── managed-skills.txt
+```
 
-- `gh-implement-issue`
-- `issue-creator`
+## Install With `npx skills`
 
-These skills are synced from this machine with their `agents/` and `references/`
-subfiles.
-
-## Install On Another Machine
+List available skills:
 
 ```bash
-git clone git@github.com:comfuture/agent-skills.git ~/Project/agent-skills
+npx skills add comfuture/agent-skills --list
+```
+
+Install one skill globally for Claude Code:
+
+```bash
+npx skills add comfuture/agent-skills --skill issue-creator -g -a claude-code -y
+```
+
+Install every skill for every detected agent:
+
+```bash
+npx skills add comfuture/agent-skills --skill '*' --agent '*' -y
+```
+
+The `skills` CLI also supports local paths while developing:
+
+```bash
+npx skills add . --list
+```
+
+## Install With GitHub CLI
+
+GitHub CLI v2.90.0+ includes `gh skill`:
+
+```bash
+gh skill install comfuture/agent-skills issue-creator --agent claude-code --scope user
+gh skill install comfuture/agent-skills gh-implement-issue --agent codex --scope user
+```
+
+Install every skill:
+
+```bash
+gh skill install comfuture/agent-skills --all --agent universal --scope user
+```
+
+Preview repository validity before publishing a release:
+
+```bash
+gh skill publish --dry-run
+```
+
+## Install In Claude Code As A Plugin
+
+Claude Code plugins are namespaced, so installed skills are invoked as
+`/comfuture-agent-skills:issue-creator` and
+`/comfuture-agent-skills:gh-implement-issue`.
+
+Add this repository as a plugin marketplace:
+
+```text
+/plugin marketplace add comfuture/agent-skills
+```
+
+Install the plugin:
+
+```text
+/plugin install comfuture-agent-skills@comfuture-skills
+```
+
+For local plugin development:
+
+```bash
+claude --plugin-dir .
+```
+
+Then run `/reload-plugins` inside Claude Code after edits.
+
+## Install In Gemini CLI
+
+Gemini CLI discovers skills from `~/.gemini/skills/`, `~/.agents/skills/`, and
+workspace-level `.gemini/skills/` or `.agents/skills/`.
+
+```bash
+gemini skills install https://github.com/comfuture/agent-skills.git --consent
+```
+
+You can also use the interoperable `.agents/skills/` path through `npx skills`
+or `gh skill`.
+
+## Codex Local Helpers
+
+Codex reads the open Agent Skills locations, and this repository also keeps
+small helper scripts for syncing with a local `~/.codex/skills` setup.
+
+Install managed skills into `~/.codex/skills`:
+
+```bash
 ~/Project/agent-skills/scripts/install.sh
 ```
 
-Install only selected skills:
-
-```bash
-~/Project/agent-skills/scripts/install.sh issue-creator gh-implement-issue
-```
-
-Preview without writing:
-
-```bash
-~/Project/agent-skills/scripts/install.sh --dry-run
-```
-
-The installer uses `--delete` only inside each managed skill directory. It never
-deletes the whole `~/.codex/skills` tree.
-
-## Export Local Edits Back To The Repo
-
-After editing a skill locally under `~/.codex/skills`, copy it back here before
-committing:
+Export local edits from `~/.codex/skills` back to this repository:
 
 ```bash
 ~/Project/agent-skills/scripts/export-from-codex.sh issue-creator
-git -C ~/Project/agent-skills diff -- issue-creator
+git -C ~/Project/agent-skills diff -- skills/issue-creator
 ```
 
-Export every currently tracked root-level skill:
+The script allowlist is `managed-skills.txt`. `--delete` is applied only inside
+each managed skill directory, never against all of `~/.codex`.
+
+## Maintenance Checks
+
+Before committing a new or edited skill:
 
 ```bash
-~/Project/agent-skills/scripts/export-from-codex.sh
+git grep -nE '(/Users/|gho_|sk-|BEGIN .*PRIVATE KEY|auth.json)' -- . ':!README.md' ':!scripts/*' ':!.gitignore'
+npx skills add . --list
+gh skill publish --dry-run
 ```
 
-Before committing a new or edited skill, check for machine-local paths, secrets,
-and likely vendored/system skill copies:
+When adding new skills, keep the folder name, `name` frontmatter, and
+`managed-skills.txt` entry in sync.
 
-```bash
-git -C ~/Project/agent-skills grep -nE '(/Users/|gho_|sk-|BEGIN .*PRIVATE KEY|auth.json)'
-cat ~/Project/agent-skills/managed-skills.txt
-find ~/Project/agent-skills -maxdepth 2 -name SKILL.md -print
-```
+When publishing a Claude Code plugin update, bump the `version` in both
+`.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
 
-## Future Expansion
+## Security
 
-Prefer adding explicit, scrubbed payloads over broad mirrors:
-
-- `profiles/` for optional Codex profiles or AGENTS variants.
-- `templates/` for settings snippets that must be copied manually.
-- `scripts/` for one-way sync helpers with narrow allowlists.
-
-Keep private state out of Git by default.
+Skills are executable agent instructions. Review third-party skills before
+installing them, especially if they include scripts, shell commands, network
+access, package installation, or credential handling.

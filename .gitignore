@@ -4,6 +4,8 @@
 *.swp
 *.pyc
 __pycache__/
+.agents/
+skills-lock.json
 
 # Keep this repository as an allowlisted skill/config source, not a raw
 # ~/.codex mirror.

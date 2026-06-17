@@ -1,0 +1,35 @@
+{
+  "name": "comfuture-skills",
+  "owner": {
+    "name": "comfuture"
+  },
+  "description": "Portable Agent Skills maintained by comfuture.",
+  "plugins": [
+    {
+      "name": "comfuture-agent-skills",
+      "source": "./",
+      "description": "Agent skills for GitHub issue creation and issue-to-PR workflows.",
+      "version": "0.1.0",
+      "author": {
+        "name": "comfuture"
+      },
+      "homepage": "https://github.com/comfuture/agent-skills",
+      "repository": "https://github.com/comfuture/agent-skills",
+      "license": "MIT",
+      "keywords": [
+        "agent-skills",
+        "github",
+        "issues",
+        "codex",
+        "claude-code"
+      ],
+      "category": "development",
+      "tags": [
+        "github",
+        "issues",
+        "pull-requests",
+        "agent-skills"
+      ]
+    }
+  ]
+}

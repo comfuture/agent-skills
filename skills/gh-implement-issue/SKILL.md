@@ -1,6 +1,8 @@
 ---
 name: gh-implement-issue
 description: Implement GitHub issues through a complete branch-to-PR workflow. Use when the user asks Codex to implement, fix, or ship a specific GitHub issue, including reading issue comments, confirming the implementation contract, creating a branch, making atomic commits, validating, pushing, opening or updating a PR, and handling issue-linked review/CI follow-up. Coordinate with existing GitHub, issue-creator, gh-address-comments, gh-fix-ci, Nuxt UI, Cloudflare, browser, or project-specific skills instead of duplicating their detailed procedures.
+license: MIT
+compatibility: Requires git and GitHub CLI access for full issue-to-PR workflows. Works best in coding agents with shell, file editing, and repository context.
 ---
 
 # GH Implement Issue

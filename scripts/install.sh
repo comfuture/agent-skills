@@ -18,6 +18,7 @@ USAGE
 }
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+skills_root="$repo_root/skills"
 codex_home="${CODEX_HOME:-$HOME/.codex}"
 dry_run=0
 copy_agents=1
@@ -70,7 +71,7 @@ discover_skills() {
     skill_name="$(basename "$(dirname "$skill_dir")")"
     [[ "$skill_name" == .* ]] && continue
     skills+=("$skill_name")
-  done < <(find "$repo_root" -mindepth 2 -maxdepth 2 -name SKILL.md -type f | sort)
+  done < <(find "$skills_root" -mindepth 2 -maxdepth 2 -name SKILL.md -type f | sort)
 }
 
 validate_skill_name() {
@@ -118,5 +119,5 @@ fi
 
 for skill in "${skills[@]}"; do
   validate_skill_name "$skill"
-  sync_dir "$repo_root/$skill" "$codex_home/skills/$skill"
+  sync_dir "$skills_root/$skill" "$codex_home/skills/$skill"
 done

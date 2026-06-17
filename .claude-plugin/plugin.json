@@ -1,0 +1,18 @@
+{
+  "name": "comfuture-agent-skills",
+  "description": "Agent skills for GitHub issue creation and issue-to-PR workflows.",
+  "version": "0.1.0",
+  "author": {
+    "name": "comfuture"
+  },
+  "homepage": "https://github.com/comfuture/agent-skills",
+  "repository": "https://github.com/comfuture/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "github",
+    "issues",
+    "codex",
+    "claude-code"
+  ]
+}
