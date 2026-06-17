@@ -1,6 +1,6 @@
 ---
 name: issue-creator
-description: Create high-quality GitHub issues or issue drafts from repository evidence, user intent, and external documentation. Use when the user asks Codex to create, draft, file, open, or prepare an implementation issue, bug report, feature request, follow-up issue, or GitHub issue with researched facts, scope, non-goals, suggested direction, acceptance criteria, and validation notes.
+description: Create high-quality GitHub issues or issue drafts from repository evidence, user intent, and external documentation. Use when the user asks an agent to create, draft, file, open, or prepare an implementation issue, bug report, feature request, follow-up issue, or GitHub issue with researched facts, scope, non-goals, suggested direction, acceptance criteria, and validation notes.
 license: MIT
 compatibility: Works with Agent Skills-compatible coding agents. Creating issues directly requires GitHub CLI or an equivalent GitHub integration.
 ---

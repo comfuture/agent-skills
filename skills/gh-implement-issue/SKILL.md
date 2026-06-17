@@ -1,6 +1,6 @@
 ---
 name: gh-implement-issue
-description: Implement GitHub issues through a complete branch-to-PR workflow. Use when the user asks Codex to implement, fix, or ship a specific GitHub issue, including reading issue comments, confirming the implementation contract, creating a branch, making atomic commits, validating, pushing, opening or updating a PR, and handling issue-linked review/CI follow-up. Coordinate with existing GitHub, issue-creator, gh-address-comments, gh-fix-ci, Nuxt UI, Cloudflare, browser, or project-specific skills instead of duplicating their detailed procedures.
+description: Implement GitHub issues through a complete branch-to-PR workflow. Use when the user asks an agent to implement, fix, or ship a specific GitHub issue, including reading issue comments, confirming the implementation contract, creating a branch, making atomic commits, validating, pushing, opening or updating a PR, and handling issue-linked review/CI follow-up. Use related skills or integrations when available; otherwise inspect the repository, issue, PR, CI, and review context directly with the available tools.
 license: MIT
 compatibility: Requires git and GitHub CLI access for full issue-to-PR workflows. Works best in coding agents with shell, file editing, and repository context.
 ---
@@ -51,9 +51,9 @@ Use this when the job is not just "make a patch", but "implement the GitHub issu
    - Re-check CI or PR checks before claiming status in the PR body.
 
 7. Follow up on review/CI.
-   - Use `gh-address-comments` or `github-review-thread-hygiene` for review threads.
-   - Use `gh-fix-ci` for failing GitHub Actions.
-   - For valid review comments, patch, validate, push, reply, resolve, and re-fetch unresolved thread count.
+   - If review-thread helper skills or GitHub integrations are available, use them to inspect unresolved review threads and preserve thread state. If they are not available, use `gh pr view`, `gh api`, or the available GitHub interface to identify unresolved review comments before patching.
+   - If CI-debugging helper skills or integrations are available, use them to inspect failing GitHub Actions or external check details. If they are not available, use `gh pr checks`, `gh run view`, linked check URLs, or local reproduction commands to collect the failure evidence.
+   - For valid review comments or CI failures, patch, validate, push, reply where appropriate, and re-check the unresolved thread or check status.
    - For invalid or deferred comments, explain concretely before resolving only if that matches the user's hygiene rule.
 
 ## Closeout Checklist

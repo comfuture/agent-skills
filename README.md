@@ -22,8 +22,28 @@ behavior.
 
 ## Install For Codex
 
-Codex supports the open Agent Skills format and can read user-level skills from
-`~/.agents/skills`. For my own local Codex setup, this repository also includes
+The easiest Codex path is the built-in `$skill-installer` skill. Ask it to
+install the skill folders from this repository:
+
+```text
+$skill-installer Install skills/issue-creator and skills/gh-implement-issue from comfuture/agent-skills.
+```
+
+After installation, restart Codex to pick up new skills.
+
+If your Codex surface does not expose `$skill-installer`, use the local helper
+script below or install through `npx skills` / `gh skill` into a supported
+Agent Skills directory.
+
+You can also give `$skill-installer` direct GitHub paths:
+
+```text
+$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/issue-creator
+$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-implement-issue
+```
+
+Codex also supports the open Agent Skills format and can read user-level skills
+from `~/.agents/skills`. For my own local Codex setup, this repository includes
 a helper that syncs the managed skills into `~/.codex/skills`.
 
 ```bash
