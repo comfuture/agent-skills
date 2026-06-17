@@ -1,48 +1,52 @@
 # Agent Skills
 
-Portable Agent Skills for GitHub issue creation and issue-to-PR workflows.
+Personal Agent Skills for GitHub issue creation and issue-to-PR workflows.
 
-This repository follows the open [Agent Skills specification](https://agentskills.io/specification):
-each skill is a folder under `skills/` with a required `SKILL.md`, YAML
-frontmatter, and optional supporting files such as `references/`, `scripts/`,
-`assets/`, or agent-specific metadata.
+This repository is maintained primarily so I can sync my own agent skills across
+machines. It is public so other people can inspect, adapt, or install the
+skills if they are useful, but it is not a supported product or service.
 
-## Skills
+## Before You Install
 
-- `issue-creator`: Research context and draft or create implementation-ready
-  GitHub issues.
-- `gh-implement-issue`: Implement a GitHub issue through a validated
-  branch-to-PR workflow.
+Review the skills before using them. Agent skills are executable instructions
+for coding agents and may cause file changes, shell commands, network requests,
+GitHub writes, or other state-changing actions depending on the agent and task.
 
-These are personally maintained skills. The repository intentionally excludes
-copies of skills already provided by Codex, Claude Code, OpenAI-curated plugins,
-or other agent runtimes.
+Use this repository at your own risk. I do not provide warranty, support
+guarantees, or compensation for damage, data loss, incorrect output, security
+issues, costs, or any other loss caused by using these skills without verifying
+that they are appropriate for your environment.
 
-## Repository Layout
+The contents may change at any time. Pin a tag or commit if you need stable
+behavior.
 
-```text
-.
-├── .claude-plugin/
-│   ├── marketplace.json
-│   └── plugin.json
-├── skills/
-│   ├── gh-implement-issue/
-│   │   ├── SKILL.md
-│   │   └── agents/openai.yaml
-│   └── issue-creator/
-│       ├── SKILL.md
-│       ├── agents/openai.yaml
-│       └── references/
-├── scripts/
-│   ├── export-from-codex.sh
-│   └── install.sh
-├── AGENTS.md
-├── LICENSE
-├── README.md
-└── managed-skills.txt
+## Install For Codex
+
+Codex supports the open Agent Skills format and can read user-level skills from
+`~/.agents/skills`. For my own local Codex setup, this repository also includes
+a helper that syncs the managed skills into `~/.codex/skills`.
+
+```bash
+git clone git@github.com:comfuture/agent-skills.git ~/Project/agent-skills
+~/Project/agent-skills/scripts/install.sh
+```
+
+Install only one managed skill:
+
+```bash
+~/Project/agent-skills/scripts/install.sh issue-creator
+```
+
+Preview without writing:
+
+```bash
+~/Project/agent-skills/scripts/install.sh --dry-run
 ```
 
 ## Install With `npx skills`
+
+The cross-agent `skills` CLI can install these skills into many supported agent
+hosts.
 
 List available skills:
 
@@ -50,7 +54,7 @@ List available skills:
 npx skills add comfuture/agent-skills --list
 ```
 
-Install one skill globally for Claude Code:
+Install `issue-creator` globally for Claude Code:
 
 ```bash
 npx skills add comfuture/agent-skills --skill issue-creator -g -a claude-code -y
@@ -62,7 +66,7 @@ Install every skill for every detected agent:
 npx skills add comfuture/agent-skills --skill '*' --agent '*' -y
 ```
 
-The `skills` CLI also supports local paths while developing:
+During local development:
 
 ```bash
 npx skills add . --list
@@ -70,7 +74,7 @@ npx skills add . --list
 
 ## Install With GitHub CLI
 
-GitHub CLI v2.90.0+ includes `gh skill`:
+GitHub CLI v2.90.0+ includes `gh skill`.
 
 ```bash
 gh skill install comfuture/agent-skills issue-creator --agent claude-code --scope user
@@ -83,10 +87,10 @@ Install every skill:
 gh skill install comfuture/agent-skills --all --agent universal --scope user
 ```
 
-Preview repository validity before publishing a release:
+Pin a version when repeatability matters:
 
 ```bash
-gh skill publish --dry-run
+gh skill install comfuture/agent-skills issue-creator --pin <tag-or-commit>
 ```
 
 ## Install In Claude Code As A Plugin
@@ -124,29 +128,29 @@ workspace-level `.gemini/skills/` or `.agents/skills/`.
 gemini skills install https://github.com/comfuture/agent-skills.git --consent
 ```
 
-You can also use the interoperable `.agents/skills/` path through `npx skills`
-or `gh skill`.
+## Included Skills
 
-## Codex Local Helpers
+- `issue-creator`: Research context and draft or create implementation-ready
+  GitHub issues.
+- `gh-implement-issue`: Implement a GitHub issue through a validated
+  branch-to-PR workflow.
 
-Codex reads the open Agent Skills locations, and this repository also keeps
-small helper scripts for syncing with a local `~/.codex/skills` setup.
+These are personally maintained skills. This repository intentionally excludes
+copies of skills already provided by Codex, Claude Code, OpenAI-curated plugins,
+or other agent runtimes.
 
-Install managed skills into `~/.codex/skills`:
+## Updating Local Edits
 
-```bash
-~/Project/agent-skills/scripts/install.sh
-```
-
-Export local edits from `~/.codex/skills` back to this repository:
+If you edit a skill locally under `~/.codex/skills`, export it back to this
+repository before committing:
 
 ```bash
 ~/Project/agent-skills/scripts/export-from-codex.sh issue-creator
 git -C ~/Project/agent-skills diff -- skills/issue-creator
 ```
 
-The script allowlist is `managed-skills.txt`. `--delete` is applied only inside
-each managed skill directory, never against all of `~/.codex`.
+The helper script allowlist is `managed-skills.txt`. `--delete` is applied only
+inside each managed skill directory, never against all of `~/.codex`.
 
 ## Maintenance Checks
 
@@ -156,6 +160,7 @@ Before committing a new or edited skill:
 git grep -nE '(/Users/|gho_|sk-|BEGIN .*PRIVATE KEY|auth.json)' -- . ':!README.md' ':!scripts/*' ':!.gitignore'
 npx skills add . --list
 gh skill publish --dry-run
+claude plugin validate --strict .
 ```
 
 When adding new skills, keep the folder name, `name` frontmatter, and
@@ -164,8 +169,6 @@ When adding new skills, keep the folder name, `name` frontmatter, and
 When publishing a Claude Code plugin update, bump the `version` in both
 `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
 
-## Security
+## License
 
-Skills are executable agent instructions. Review third-party skills before
-installing them, especially if they include scripts, shell commands, network
-access, package installation, or credential handling.
+MIT. See `LICENSE`.
