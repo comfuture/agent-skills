@@ -1,7 +1,7 @@
-# Phenomenon → Insight → Proposal / 현상 → 인사이트 → 대안 제시 (Phenomenon → Insight → Proposal)
+# Phenomenon → Insight → Proposal / 현상 → 인사이트 → 대안 제시
 
 - English name: Phenomenon → Insight → Proposal
-- Korean name: 현상 → 인사이트 → 대안 제시 (Phenomenon → Insight → Proposal)
+- Korean name: 현상 → 인사이트 → 대안 제시
 - Selection category: insight
 - Use when: Use when a visible phenomenon should be interpreted and turned into a proposal.
 - Avoid when: Avoid when the phenomenon is only a symptom of a simpler problem.

@@ -1,7 +1,7 @@
-# Fact → Interpretation → Commentary / 사실 → 해석 → 논평 (Fact → Interpretation → Commentary)
+# Fact → Interpretation → Commentary / 사실 → 해석 → 논평
 
 - English name: Fact → Interpretation → Commentary
-- Korean name: 사실 → 해석 → 논평 (Fact → Interpretation → Commentary)
+- Korean name: 사실 → 해석 → 논평
 - Selection category: commentary
 - Use when: Use for opinion columns or analysis pieces that interpret a fact, event, or trend.
 - Avoid when: Avoid when the user needs a neutral report.

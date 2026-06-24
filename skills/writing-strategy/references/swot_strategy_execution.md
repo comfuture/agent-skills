@@ -1,7 +1,7 @@
-# SWOT → Strategy → Execution / SWOT → 전략 → 실행 (SWOT → Strategy → Execution)
+# SWOT → Strategy → Execution / SWOT → 전략 → 실행
 
 - English name: SWOT → Strategy → Execution
-- Korean name: SWOT → 전략 → 실행 (SWOT → Strategy → Execution)
+- Korean name: SWOT → 전략 → 실행
 - Selection category: business
 - Use when: Use for strategic assessment where strengths, weaknesses, opportunities, and threats matter.
 - Avoid when: Avoid when SWOT would become a checklist without a decision.

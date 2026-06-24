@@ -1,7 +1,7 @@
-# Tension → Relief → Resolution / 긴장 → 이완 → 결론 (Tension → Relief → Resolution)
+# Tension → Relief → Resolution / 긴장 → 이완 → 결론
 
 - English name: Tension → Relief → Resolution
-- Korean name: 긴장 → 이완 → 결론 (Tension → Relief → Resolution)
+- Korean name: 긴장 → 이완 → 결론
 - Selection category: narrative
 - Use when: Use when suspense, conflict, or emotional tension should pull the reader through the piece.
 - Avoid when: Avoid when the tone must stay strictly neutral.

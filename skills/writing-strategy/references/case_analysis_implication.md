@@ -1,7 +1,7 @@
-# Case → Analysis → Implication / 사례 → 분석 → 시사점 (Case → Analysis → Implication)
+# Case → Analysis → Implication / 사례 → 분석 → 시사점
 
 - English name: Case → Analysis → Implication
-- Korean name: 사례 → 분석 → 시사점 (Case → Analysis → Implication)
+- Korean name: 사례 → 분석 → 시사점
 - Selection category: case
 - Use when: Use when a concrete case can carry the argument and lead to broader implications.
 - Avoid when: Avoid when there is no specific case or evidence to inspect.

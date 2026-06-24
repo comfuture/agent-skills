@@ -1,7 +1,7 @@
-# Pain → Claim → Gain / 고통 → 제안 → 기대 효과(Pain → Claim → Gain)
+# Pain → Claim → Gain / 고통 → 제안 → 기대 효과
 
 - English name: Pain → Claim → Gain
-- Korean name: 고통 → 제안 → 기대 효과(Pain → Claim → Gain)
+- Korean name: 고통 → 제안 → 기대 효과
 - Selection category: persuasion
 - Use when: Use when a sharp pain point should lead to a claim and a tangible gain.
 - Avoid when: Avoid when the tone should be gentle or exploratory.

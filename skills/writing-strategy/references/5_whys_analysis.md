@@ -1,7 +1,7 @@
-# 5 Whys Analysis / 5 WHY 분석 (5 Whys Analysis)
+# 5 Whys Analysis / 5 WHY 분석
 
 - English name: 5 Whys Analysis
-- Korean name: 5 WHY 분석 (5 Whys Analysis)
+- Korean name: 5 WHY 분석
 - Selection category: analysis
 - Use when: Use when the central task is root-cause discovery through repeated why questions.
 - Avoid when: Avoid when the answer is already known and the draft only needs persuasion.

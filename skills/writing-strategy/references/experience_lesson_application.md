@@ -1,7 +1,7 @@
-# Experience → Lesson → Application / 경험 → 교훈 → 적용 (Experience → Lesson → Application)
+# Experience → Lesson → Application / 경험 → 교훈 → 적용
 
 - English name: Experience → Lesson → Application
-- Korean name: 경험 → 교훈 → 적용 (Experience → Lesson → Application)
+- Korean name: 경험 → 교훈 → 적용
 - Selection category: reflection
 - Use when: Use for personal, team, or field experience that should yield a lesson and practical application.
 - Avoid when: Avoid when experience is anecdotal but no transferable lesson exists.

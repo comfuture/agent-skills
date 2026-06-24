@@ -1,7 +1,7 @@
-# Time-Based Narrative / 시간 흐름 기반 전개 (Time-Based Narrative)
+# Time-Based Narrative / 시간 흐름 기반 전개
 
 - English name: Time-Based Narrative
-- Korean name: 시간 흐름 기반 전개 (Time-Based Narrative)
+- Korean name: 시간 흐름 기반 전개
 - Selection category: time
 - Use when: Use when chronology, milestones, or process order should structure the writing.
 - Avoid when: Avoid if time order is incidental.

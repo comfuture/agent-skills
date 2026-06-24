@@ -1,7 +1,7 @@
-# Failure → Overcome → Success / 실패 → 극복 → 성공 사례 (Failure → Overcome → Success)
+# Failure → Overcome → Success / 실패 → 극복 → 성공 사례
 
 - English name: Failure → Overcome → Success
-- Korean name: 실패 → 극복 → 성공 사례 (Failure → Overcome → Success)
+- Korean name: 실패 → 극복 → 성공 사례
 - Selection category: narrative
 - Use when: Use when failure, recovery, and success form the emotional core.
 - Avoid when: Avoid when failure cannot be described honestly.

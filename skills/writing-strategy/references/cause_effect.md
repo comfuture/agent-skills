@@ -1,7 +1,7 @@
-# Cause → Effect / 원인 → 결과 구조 (Cause → Effect)
+# Cause → Effect / 원인 → 결과 구조
 
 - English name: Cause → Effect
-- Korean name: 원인 → 결과 구조 (Cause → Effect)
+- Korean name: 원인 → 결과 구조
 - Selection category: analysis
 - Use when: Use when the topic depends on explaining why something happened and what followed.
 - Avoid when: Avoid when causality is speculative or unproven.

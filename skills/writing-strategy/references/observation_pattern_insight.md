@@ -1,7 +1,7 @@
-# Observation → Pattern → Insight / 관찰 → 패턴 → 인사이트 (Observation → Pattern → Insight)
+# Observation → Pattern → Insight / 관찰 → 패턴 → 인사이트
 
 - English name: Observation → Pattern → Insight
-- Korean name: 관찰 → 패턴 → 인사이트 (Observation → Pattern → Insight)
+- Korean name: 관찰 → 패턴 → 인사이트
 - Selection category: insight
 - Use when: Use when scattered observations reveal a pattern and a deeper insight.
 - Avoid when: Avoid when there are too few observations to form a pattern.

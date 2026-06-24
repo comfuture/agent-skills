@@ -1,7 +1,7 @@
-# Concept → Expression → Tips / 컨셉 → 표현 사례 → 적용 팁 (Concept → Expression → Tips)
+# Concept → Expression → Tips / 컨셉 → 표현 사례 → 적용 팁
 
 - English name: Concept → Expression → Tips
-- Korean name: 컨셉 → 표현 사례 → 적용 팁 (Concept → Expression → Tips)
+- Korean name: 컨셉 → 표현 사례 → 적용 팁
 - Selection category: craft
 - Use when: Use when explaining an abstract concept and turning it into expression rules or practical writing tips.
 - Avoid when: Avoid when the reader needs a business decision rather than craft guidance.

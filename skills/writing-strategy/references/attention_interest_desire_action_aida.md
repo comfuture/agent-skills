@@ -1,7 +1,7 @@
-# Attention → Interest → Desire → Action (AIDA) / 주목 → 관심 → 욕구 → 행동 (Attention → Interest → Desire → Action, AIDA)
+# Attention → Interest → Desire → Action (AIDA) / 주목 → 관심 → 욕구 → 행동
 
 - English name: Attention → Interest → Desire → Action (AIDA)
-- Korean name: 주목 → 관심 → 욕구 → 행동 (Attention → Interest → Desire → Action, AIDA)
+- Korean name: 주목 → 관심 → 욕구 → 행동
 - Selection category: persuasion
 - Use when: Use for marketing, campaign, launch, or advocacy writing that must move readers toward action.
 - Avoid when: Avoid when the piece needs balanced analysis rather than conversion.

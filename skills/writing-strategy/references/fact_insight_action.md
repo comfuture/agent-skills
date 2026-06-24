@@ -1,7 +1,7 @@
-# Fact → Insight → Action / 사실 → 인사이트 → 실행 구조 (Fact → Insight → Action)
+# Fact → Insight → Action / 사실 → 인사이트 → 실행 구조
 
 - English name: Fact → Insight → Action
-- Korean name: 사실 → 인사이트 → 실행 구조 (Fact → Insight → Action)
+- Korean name: 사실 → 인사이트 → 실행 구조
 - Selection category: analysis
 - Use when: Use when facts or data should lead to insight and a concrete next step.
 - Avoid when: Avoid when the material is mostly emotional or character-led.

@@ -1,7 +1,7 @@
-# Vision → Plan → Action / 비전 → 계획 → 실행 (Vision → Plan → Action)
+# Vision → Plan → Action / 비전 → 계획 → 실행
 
 - English name: Vision → Plan → Action
-- Korean name: 비전 → 계획 → 실행 (Vision → Plan → Action)
+- Korean name: 비전 → 계획 → 실행
 - Selection category: planning
 - Use when: Use when a future vision should be made credible through plan and action.
 - Avoid when: Avoid when the vision is not yet defined.

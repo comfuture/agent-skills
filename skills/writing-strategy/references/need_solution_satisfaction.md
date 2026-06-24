@@ -1,7 +1,7 @@
-# Need → Solution → Satisfaction / 니즈 → 솔루션 → 만족 구조 (Need → Solution → Satisfaction)
+# Need → Solution → Satisfaction / 니즈 → 솔루션 → 만족 구조
 
 - English name: Need → Solution → Satisfaction
-- Korean name: 니즈 → 솔루션 → 만족 구조 (Need → Solution → Satisfaction)
+- Korean name: 니즈 → 솔루션 → 만족 구조
 - Selection category: persuasion
 - Use when: Use when the reader's need can be connected to a solution and a satisfying result.
 - Avoid when: Avoid as a generic problem-solution substitute unless the need is vivid. This is a generic structure; select it only after checking more distinctive options.

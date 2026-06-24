@@ -1,7 +1,7 @@
-# Competitor Comparison → Own Strength / 경쟁사 비교 → 자사 강점 (Competitor Comparison → Own Strength)
+# Competitor Comparison → Own Strength / 경쟁사 비교 → 자사 강점
 
 - English name: Competitor Comparison → Own Strength
-- Korean name: 경쟁사 비교 → 자사 강점 (Competitor Comparison → Own Strength)
+- Korean name: 경쟁사 비교 → 자사 강점
 - Selection category: business
 - Use when: Use when differentiating a product, company, or proposal against competitors.
 - Avoid when: Avoid if competitor facts are thin or unverifiable.

@@ -1,7 +1,7 @@
-# Dissatisfaction → Alternative → Transformation / 불만 → 대안 → 변화 (Dissatisfaction → Alternative → Transformation)
+# Dissatisfaction → Alternative → Transformation / 불만 → 대안 → 변화
 
 - English name: Dissatisfaction → Alternative → Transformation
-- Korean name: 불만 → 대안 → 변화 (Dissatisfaction → Alternative → Transformation)
+- Korean name: 불만 → 대안 → 변화
 - Selection category: persuasion
 - Use when: Use when reader dissatisfaction can be voiced, answered by an alternative, then shown as change.
 - Avoid when: Avoid when the pain point is mild or unclear.

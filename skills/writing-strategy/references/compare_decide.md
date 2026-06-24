@@ -1,7 +1,7 @@
-# Compare → Decide / 비교 → 선택 구조 (Compare → Decide)
+# Compare → Decide / 비교 → 선택 구조
 
 - English name: Compare → Decide
-- Korean name: 비교 → 선택 구조 (Compare → Decide)
+- Korean name: 비교 → 선택 구조
 - Selection category: decision
 - Use when: Use when readers must choose among options using explicit criteria.
 - Avoid when: Avoid when there is only one serious option.

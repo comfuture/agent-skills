@@ -1,7 +1,7 @@
-# Question → Imagination → Resolution / 반응 유도형 (질문 → 상상 → 정리) (Question → Imagination → Resolution)
+# Question → Imagination → Resolution / 반응 유도형 (질문 → 상상 → 정리)
 
 - English name: Question → Imagination → Resolution
-- Korean name: 반응 유도형 (질문 → 상상 → 정리) (Question → Imagination → Resolution)
+- Korean name: 반응 유도형 (질문 → 상상 → 정리)
 - Selection category: creative
 - Use when: Use when a speculative question or what-if scenario can open the reader's imagination.
 - Avoid when: Avoid when the topic requires strict factual reporting.

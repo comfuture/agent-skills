@@ -1,7 +1,7 @@
-# Trend → Example → Action (TEA) / 트렌드 → 사례 → 실행 (Trend → Example → Action, TEA)
+# Trend → Example → Action (TEA) / 트렌드 → 사례 → 실행
 
 - English name: Trend → Example → Action (TEA)
-- Korean name: 트렌드 → 사례 → 실행 (Trend → Example → Action, TEA)
+- Korean name: 트렌드 → 사례 → 실행
 - Selection category: trend
 - Use when: Use when a trend should be made credible through examples and translated into action.
 - Avoid when: Avoid when no timely examples are available.

@@ -1,7 +1,7 @@
-# Voice of Customer → Empathy → Proposal / 고객의 말 → 공감 → 제안 (Voice of Customer → Empathy → Proposal)
+# Voice of Customer → Empathy → Proposal / 고객의 말 → 공감 → 제안
 
 - English name: Voice of Customer → Empathy → Proposal
-- Korean name: 고객의 말 → 공감 → 제안 (Voice of Customer → Empathy → Proposal)
+- Korean name: 고객의 말 → 공감 → 제안
 - Selection category: field
 - Use when: Use when customer words should lead to empathy and a practical proposal.
 - Avoid when: Avoid when customer quotes are unavailable or too generic.

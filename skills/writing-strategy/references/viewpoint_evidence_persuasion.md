@@ -1,7 +1,7 @@
-# Viewpoint → Evidence → Persuasion / 관점 제시 → 근거 제시 → 설득(Viewpoint → Evidence → Persuasion)
+# Viewpoint → Evidence → Persuasion / 관점 제시 → 근거 제시 → 설득
 
 - English name: Viewpoint → Evidence → Persuasion
-- Korean name: 관점 제시 → 근거 제시 → 설득(Viewpoint → Evidence → Persuasion)
+- Korean name: 관점 제시 → 근거 제시 → 설득
 - Selection category: argument
 - Use when: Use when a clear viewpoint must be supported by evidence and persuasion.
 - Avoid when: Avoid when the piece should present multiple views evenly.

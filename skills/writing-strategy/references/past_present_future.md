@@ -1,7 +1,7 @@
-# Past → Present → Future / 과거 → 현재 → 미래 구조 (Past → Present → Future)
+# Past → Present → Future / 과거 → 현재 → 미래 구조
 
 - English name: Past → Present → Future
-- Korean name: 과거 → 현재 → 미래 구조 (Past → Present → Future)
+- Korean name: 과거 → 현재 → 미래 구조
 - Selection category: time
 - Use when: Use when historical change or evolution is the best organizing principle.
 - Avoid when: Avoid when the topic is not time-dependent.

@@ -1,7 +1,7 @@
-# Keywords → Meaning / 키워드 나열 → 의미 부여 (Keywords → Meaning)
+# Keywords → Meaning / 키워드 나열 → 의미 부여
 
 - English name: Keywords → Meaning
-- Korean name: 키워드 나열 → 의미 부여 (Keywords → Meaning)
+- Korean name: 키워드 나열 → 의미 부여
 - Selection category: explanation
 - Use when: Use when several keywords should anchor the article and each needs meaning or interpretation.
 - Avoid when: Avoid when the sequence of events matters more than terms.

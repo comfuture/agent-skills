@@ -1,7 +1,7 @@
-# Question → Experiment → Conclusion / 의문 → 실험 → 결론 (Question → Experiment → Conclusion)
+# Question → Experiment → Conclusion / 의문 → 실험 → 결론
 
 - English name: Question → Experiment → Conclusion
-- Korean name: 의문 → 실험 → 결론 (Question → Experiment → Conclusion)
+- Korean name: 의문 → 실험 → 결론
 - Selection category: inquiry
 - Use when: Use when the article can be framed as a question tested through experiment or evidence.
 - Avoid when: Avoid when no test, trial, or comparison exists.

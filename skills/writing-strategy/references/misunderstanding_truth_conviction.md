@@ -1,7 +1,7 @@
-# Misunderstanding → Truth → Conviction / 오해 → 진실 → 확신 (Misunderstanding → Truth → Conviction)
+# Misunderstanding → Truth → Conviction / 오해 → 진실 → 확신
 
 - English name: Misunderstanding → Truth → Conviction
-- Korean name: 오해 → 진실 → 확신 (Misunderstanding → Truth → Conviction)
+- Korean name: 오해 → 진실 → 확신
 - Selection category: myth
 - Use when: Use when the reader likely holds a misconception that the draft should correct persuasively.
 - Avoid when: Avoid when the misconception is not common or would sound patronizing.

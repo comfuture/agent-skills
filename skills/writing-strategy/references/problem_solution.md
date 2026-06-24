@@ -1,7 +1,7 @@
-# Problem → Solution / 문제 → 해결 구조 (Problem → Solution)
+# Problem → Solution / 문제 → 해결 구조
 
 - English name: Problem → Solution
-- Korean name: 문제 → 해결 구조 (Problem → Solution)
+- Korean name: 문제 → 해결 구조
 - Selection category: general
 - Use when: Use only when the user asks for a direct fix or the material is truly simple.
 - Avoid when: Avoid as the default; check more specific strategies first. This is a generic structure; select it only after checking more distinctive options.

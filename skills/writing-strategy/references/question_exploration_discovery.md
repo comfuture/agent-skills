@@ -1,7 +1,7 @@
-# Question → Exploration → Discovery / 질문 → 탐색 → 발견 (Question → Exploration → Discovery)
+# Question → Exploration → Discovery / 질문 → 탐색 → 발견
 
 - English name: Question → Exploration → Discovery
-- Korean name: 질문 → 탐색 → 발견 (Question → Exploration → Discovery)
+- Korean name: 질문 → 탐색 → 발견
 - Selection category: inquiry
 - Use when: Use for reflective or investigative writing that should invite readers into a search.
 - Avoid when: Avoid when the conclusion must be stated immediately.

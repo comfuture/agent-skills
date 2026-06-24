@@ -1,7 +1,7 @@
-# Analogy → Comparison → Takeaway / 유사 사례 → 비교 분석 → 시사점 (Analogy → Comparison → Takeaway)
+# Analogy → Comparison → Takeaway / 유사 사례 → 비교 분석 → 시사점
 
 - English name: Analogy → Comparison → Takeaway
-- Korean name: 유사 사례 → 비교 분석 → 시사점 (Analogy → Comparison → Takeaway)
+- Korean name: 유사 사례 → 비교 분석 → 시사점
 - Selection category: explanation
 - Use when: Use when an unfamiliar idea can become clear through a familiar analogy and comparison.
 - Avoid when: Avoid weak analogies that only decorate the topic.

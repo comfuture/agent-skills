@@ -1,7 +1,7 @@
-# Trend → Opportunity → Strategy / 트렌드 → 기회 → 대응 전략 (Trend → Opportunity → Strategy)
+# Trend → Opportunity → Strategy / 트렌드 → 기회 → 대응 전략
 
 - English name: Trend → Opportunity → Strategy
-- Korean name: 트렌드 → 기회 → 대응 전략 (Trend → Opportunity → Strategy)
+- Korean name: 트렌드 → 기회 → 대응 전략
 - Selection category: trend
 - Use when: Use when a trend creates a concrete opportunity that calls for strategic response.
 - Avoid when: Avoid when the trend is vague or not yet relevant.

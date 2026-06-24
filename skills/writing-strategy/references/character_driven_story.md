@@ -1,7 +1,7 @@
-# Character-Driven Story / 인물 중심 이야기 (Character-Driven Story)
+# Character-Driven Story / 인물 중심 이야기
 
 - English name: Character-Driven Story
-- Korean name: 인물 중심 이야기 (Character-Driven Story)
+- Korean name: 인물 중심 이야기
 - Selection category: narrative
 - Use when: Use when a person, founder, customer, worker, or fictional character should carry the meaning.
 - Avoid when: Avoid when the subject is impersonal data or policy mechanics.

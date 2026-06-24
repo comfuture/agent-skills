@@ -1,7 +1,7 @@
-# Problem → Analysis → Solution → Outcome / 문제 → 분석 → 해결책 → 기대 효과 (Problem → Analysis → Solution → Outcome)
+# Problem → Analysis → Solution → Outcome / 문제 → 분석 → 해결책 → 기대 효과
 
 - English name: Problem → Analysis → Solution → Outcome
-- Korean name: 문제 → 분석 → 해결책 → 기대 효과 (Problem → Analysis → Solution → Outcome)
+- Korean name: 문제 → 분석 → 해결책 → 기대 효과
 - Selection category: analysis
 - Use when: Use for diagnostic proposals where the problem needs careful analysis before solution and outcome.
 - Avoid when: Avoid as a reflexive structure for every improvement topic. This is a generic structure; select it only after checking more distinctive options.

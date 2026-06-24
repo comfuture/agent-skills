@@ -1,7 +1,7 @@
-# Challenge → Strategy → Result / 도전 → 전략 → 성과 (Challenge → Strategy → Result)
+# Challenge → Strategy → Result / 도전 → 전략 → 성과
 
 - English name: Challenge → Strategy → Result
-- Korean name: 도전 → 전략 → 성과 (Challenge → Strategy → Result)
+- Korean name: 도전 → 전략 → 성과
 - Selection category: achievement
 - Use when: Use for project, team, or organization stories where strategy converted a challenge into results.
 - Avoid when: Avoid when results are not yet visible.

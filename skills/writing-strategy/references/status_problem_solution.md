@@ -1,7 +1,7 @@
-# Status → Problem → Solution / 현황 → 문제점 → 해결책 (Status → Problem → Solution)
+# Status → Problem → Solution / 현황 → 문제점 → 해결책
 
 - English name: Status → Problem → Solution
-- Korean name: 현황 → 문제점 → 해결책 (Status → Problem → Solution)
+- Korean name: 현황 → 문제점 → 해결책
 - Selection category: general
 - Use when: Use for status reports that must move from current state to issue and response.
 - Avoid when: Avoid as the default for broader essays or stories. This is a generic structure; select it only after checking more distinctive options.

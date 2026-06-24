@@ -1,7 +1,7 @@
-# Goal → Obstacle → Solution / 목표 → 장애물 → 극복 방안 (Goal → Obstacle → Solution)
+# Goal → Obstacle → Solution / 목표 → 장애물 → 극복 방안
 
 - English name: Goal → Obstacle → Solution
-- Korean name: 목표 → 장애물 → 극복 방안 (Goal → Obstacle → Solution)
+- Korean name: 목표 → 장애물 → 극복 방안
 - Selection category: planning
 - Use when: Use when a goal is clear and the draft needs to show obstacles and how to overcome them.
 - Avoid when: Avoid as a default solution frame when a more distinctive narrative fits. This is a generic structure; select it only after checking more distinctive options.

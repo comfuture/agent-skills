@@ -1,7 +1,7 @@
-# Before → After → Next Challenge / 변화 전 → 변화 후 → 다음 과제 (Before → After → Next Challenge)
+# Before → After → Next Challenge / 변화 전 → 변화 후 → 다음 과제
 
 - English name: Before → After → Next Challenge
-- Korean name: 변화 전 → 변화 후 → 다음 과제 (Before → After → Next Challenge)
+- Korean name: 변화 전 → 변화 후 → 다음 과제
 - Selection category: change
 - Use when: Use when a transformation is complete enough to show results but still opens a next agenda.
 - Avoid when: Avoid when the ending should feel fully resolved.

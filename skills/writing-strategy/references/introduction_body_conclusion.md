@@ -1,7 +1,7 @@
-# Introduction → Body → Conclusion / 서론 → 본론 → 결론 (Introduction → Body → Conclusion)
+# Introduction → Body → Conclusion / 서론 → 본론 → 결론
 
 - English name: Introduction → Body → Conclusion
-- Korean name: 서론 → 본론 → 결론 (Introduction → Body → Conclusion)
+- Korean name: 서론 → 본론 → 결론
 - Selection category: general
 - Use when: Use only as a fallback for simple explanatory writing or when the user explicitly wants a standard essay.
 - Avoid when: Avoid as the default because it hides more specific narrative choices. This is a generic structure; select it only after checking more distinctive options.

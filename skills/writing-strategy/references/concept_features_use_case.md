@@ -1,7 +1,7 @@
-# Concept → Features → Use Case / 컨셉 소개 → 기능 설명 → 사용 예시 (Concept → Features → Use Case)
+# Concept → Features → Use Case / 컨셉 소개 → 기능 설명 → 사용 예시
 
 - English name: Concept → Features → Use Case
-- Korean name: 컨셉 소개 → 기능 설명 → 사용 예시 (Concept → Features → Use Case)
+- Korean name: 컨셉 소개 → 기능 설명 → 사용 예시
 - Selection category: explanation
 - Use when: Use when introducing a product, service, method, or idea through concept, features, and concrete use.
 - Avoid when: Avoid when feature lists would overwhelm the reader.

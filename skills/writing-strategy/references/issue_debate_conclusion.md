@@ -1,7 +1,7 @@
-# Issue → Debate → Conclusion / 이슈 → 쟁점 → 결론 (Issue → Debate → Conclusion)
+# Issue → Debate → Conclusion / 이슈 → 쟁점 → 결론
 
 - English name: Issue → Debate → Conclusion
-- Korean name: 이슈 → 쟁점 → 결론 (Issue → Debate → Conclusion)
+- Korean name: 이슈 → 쟁점 → 결론
 - Selection category: debate
 - Use when: Use when a topic has identifiable issues and opposing arguments that need a reasoned conclusion.
 - Avoid when: Avoid if the piece should remain open-ended.

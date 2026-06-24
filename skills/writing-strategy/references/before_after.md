@@ -1,7 +1,7 @@
-# Before → After / 변화 전 → 변화 후 구조 (Before → After)
+# Before → After / 변화 전 → 변화 후 구조
 
 - English name: Before → After
-- Korean name: 변화 전 → 변화 후 구조 (Before → After)
+- Korean name: 변화 전 → 변화 후 구조
 - Selection category: change
 - Use when: Use when the strongest story is a clear before-and-after transformation.
 - Avoid when: Avoid when the middle process matters more than the contrast.

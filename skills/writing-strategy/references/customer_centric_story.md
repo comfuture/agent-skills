@@ -1,7 +1,7 @@
-# Customer-Centric Story / 고객 이야기 중심 (Customer-Centric Story)
+# Customer-Centric Story / 고객 이야기 중심
 
 - English name: Customer-Centric Story
-- Korean name: 고객 이야기 중심 (Customer-Centric Story)
+- Korean name: 고객 이야기 중심
 - Selection category: case
 - Use when: Use when a customer or user scenario should make the value concrete and empathetic.
 - Avoid when: Avoid when the customer story would be invented without enough realism.

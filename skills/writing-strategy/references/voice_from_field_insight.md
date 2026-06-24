@@ -1,7 +1,7 @@
-# Voice from Field → Insight / 현장 목소리 → 인사이트 (Voice from Field → Insight)
+# Voice from Field → Insight / 현장 목소리 → 인사이트
 
 - English name: Voice from Field → Insight
-- Korean name: 현장 목소리 → 인사이트 (Voice from Field → Insight)
+- Korean name: 현장 목소리 → 인사이트
 - Selection category: field
 - Use when: Use when frontline voices, interviews, or field notes should reveal insight.
 - Avoid when: Avoid when there is no concrete voice from the field.

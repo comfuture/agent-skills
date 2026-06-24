@@ -1,7 +1,7 @@
-# Market → Opportunity → Execution / 시장 분석 → 기회 포착 → 실행 계획 (Market → Opportunity → Execution)
+# Market → Opportunity → Execution / 시장 분석 → 기회 포착 → 실행 계획
 
 - English name: Market → Opportunity → Execution
-- Korean name: 시장 분석 → 기회 포착 → 실행 계획 (Market → Opportunity → Execution)
+- Korean name: 시장 분석 → 기회 포착 → 실행 계획
 - Selection category: business
 - Use when: Use for market analysis that must move from market conditions to opportunity and execution.
 - Avoid when: Avoid when market evidence is missing.

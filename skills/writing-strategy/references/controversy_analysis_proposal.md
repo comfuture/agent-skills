@@ -1,7 +1,7 @@
-# Controversy → Analysis → Proposal / 논란 → 다각도 분석 → 제안 (Controversy → Analysis → Proposal)
+# Controversy → Analysis → Proposal / 논란 → 다각도 분석 → 제안
 
 - English name: Controversy → Analysis → Proposal
-- Korean name: 논란 → 다각도 분석 → 제안 (Controversy → Analysis → Proposal)
+- Korean name: 논란 → 다각도 분석 → 제안
 - Selection category: debate
 - Use when: Use when the topic is contested and requires balanced analysis before a proposal.
 - Avoid when: Avoid when the writer has no room for opposing views.

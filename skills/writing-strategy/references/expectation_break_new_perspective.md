@@ -1,7 +1,7 @@
-# Expectation Break → New Perspective / 반전 구조 (예상 깨기 → 새로운 관점) (Expectation Break → New Perspective)
+# Expectation Break → New Perspective / 반전 구조 (예상 깨기 → 새로운 관점)
 
 - English name: Expectation Break → New Perspective
-- Korean name: 반전 구조 (예상 깨기 → 새로운 관점) (Expectation Break → New Perspective)
+- Korean name: 반전 구조 (예상 깨기 → 새로운 관점)
 - Selection category: insight
 - Use when: Use when a counterintuitive opening can replace a common assumption with a sharper view.
 - Avoid when: Avoid forced twists that undermine trust.

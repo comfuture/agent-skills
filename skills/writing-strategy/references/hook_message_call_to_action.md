@@ -1,7 +1,7 @@
-# Hook → Message → Call-to-Action / 주목 → 메시지 → 행동 요청 (Hook → Message → Call-to-Action)
+# Hook → Message → Call-to-Action / 주목 → 메시지 → 행동 요청
 
 - English name: Hook → Message → Call-to-Action
-- Korean name: 주목 → 메시지 → 행동 요청 (Hook → Message → Call-to-Action)
+- Korean name: 주목 → 메시지 → 행동 요청
 - Selection category: persuasion
 - Use when: Use for short persuasive writing where attention and action matter more than deep explanation.
 - Avoid when: Avoid for long-form analytical drafts.

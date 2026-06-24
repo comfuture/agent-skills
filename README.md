@@ -197,4 +197,8 @@ When publishing a Claude Code plugin update, bump the `version` in both
 
 ## License
 
-MIT. See `LICENSE`.
+Repository code, scripts, and supporting metadata are licensed under MIT unless
+otherwise stated. See `LICENSE`.
+
+The `writing-strategy` skill content is licensed separately under
+CC-BY-NC-SA-4.0. See `skills/writing-strategy/LICENSE.md`.

@@ -1,7 +1,7 @@
-# Feature → Advantage → Benefit (FAB) / 특징 → 장점 → 혜택 구조 (Feature → Advantage → Benefit, FAB)
+# Feature → Advantage → Benefit (FAB) / 특징 → 장점 → 혜택 구조
 
 - English name: Feature → Advantage → Benefit (FAB)
-- Korean name: 특징 → 장점 → 혜택 구조 (Feature → Advantage → Benefit, FAB)
+- Korean name: 특징 → 장점 → 혜택 구조
 - Selection category: persuasion
 - Use when: Use for product, service, or policy writing that must translate features into reader benefits.
 - Avoid when: Avoid when the topic is not feature-driven.

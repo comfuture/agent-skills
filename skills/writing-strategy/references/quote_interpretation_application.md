@@ -1,7 +1,7 @@
-# Quote → Interpretation → Application / 인용 → 해석 → 적용 (Quote → Interpretation → Application)
+# Quote → Interpretation → Application / 인용 → 해석 → 적용
 
 - English name: Quote → Interpretation → Application
-- Korean name: 인용 → 해석 → 적용 (Quote → Interpretation → Application)
+- Korean name: 인용 → 해석 → 적용
 - Selection category: reflection
 - Use when: Use when a quote, sentence, or external voice should become the interpretive anchor.
 - Avoid when: Avoid when the quote is decorative rather than central.

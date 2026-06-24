@@ -1,7 +1,7 @@
-# Why → What → How / 왜 → 무엇 → 어떻게 (Why → What → How)
+# Why → What → How / 왜 → 무엇 → 어떻게
 
 - English name: Why → What → How
-- Korean name: 왜 → 무엇 → 어떻게 (Why → What → How)
+- Korean name: 왜 → 무엇 → 어떻게
 - Selection category: explanation
 - Use when: Use when readers need the rationale, the object, and the method in that order.
 - Avoid when: Avoid when the piece needs tension, case depth, or controversy.

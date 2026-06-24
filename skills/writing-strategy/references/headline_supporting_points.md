@@ -1,7 +1,7 @@
-# Headline → Supporting Points / 한 줄 메시지 → 근거 나열 (Headline → Supporting Points)
+# Headline → Supporting Points / 한 줄 메시지 → 근거 나열
 
 - English name: Headline → Supporting Points
-- Korean name: 한 줄 메시지 → 근거 나열 (Headline → Supporting Points)
+- Korean name: 한 줄 메시지 → 근거 나열
 - Selection category: synthesis
 - Use when: Use when one strong headline or thesis can organize several supporting points.
 - Avoid when: Avoid when the topic is exploratory and the thesis is not settled.

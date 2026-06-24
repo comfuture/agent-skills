@@ -1,7 +1,7 @@
-# 3 Key Points / 핵심 3가지 포인트 강조 (3 Key Points)
+# 3 Key Points / 핵심 3가지 포인트 강조
 
 - English name: 3 Key Points
-- Korean name: 핵심 3가지 포인트 강조 (3 Key Points)
+- Korean name: 핵심 3가지 포인트 강조
 - Selection category: synthesis
 - Use when: Use when the draft needs three balanced pillars, principles, or claims.
 - Avoid when: Avoid when the material is mainly causal, chronological, or conflict-driven.

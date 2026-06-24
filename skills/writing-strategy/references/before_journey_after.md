@@ -1,7 +1,7 @@
-# Before → Journey → After / 여정 기반 구조 (Before → Journey → After)
+# Before → Journey → After / 여정 기반 구조
 
 - English name: Before → Journey → After
-- Korean name: 여정 기반 구조 (Before → Journey → After)
+- Korean name: 여정 기반 구조
 - Selection category: narrative
 - Use when: Use when the process, struggle, or learning journey is as important as the before/after contrast.
 - Avoid when: Avoid when the journey lacks concrete events.
