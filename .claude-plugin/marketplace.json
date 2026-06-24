@@ -8,8 +8,8 @@
     {
       "name": "comfuture-agent-skills",
       "source": "./",
-      "description": "Agent skills for GitHub issue creation and issue-to-PR workflows.",
-      "version": "0.1.0",
+      "description": "Agent skills for GitHub workflows and writing strategy.",
+      "version": "0.2.0",
       "author": {
         "name": "comfuture"
       },
@@ -20,6 +20,8 @@
         "agent-skills",
         "github",
         "issues",
+        "writing",
+        "strategy",
         "codex",
         "claude-code"
       ],
@@ -28,6 +30,8 @@
         "github",
         "issues",
         "pull-requests",
+        "writing",
+        "strategy",
         "agent-skills"
       ]
     }
