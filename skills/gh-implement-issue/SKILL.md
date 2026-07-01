@@ -2,7 +2,6 @@
 name: gh-implement-issue
 description: Implement GitHub issues through a complete branch-to-PR workflow. Use when the user asks an agent to implement, fix, or ship a specific GitHub issue, including reading issue comments, confirming the implementation contract, creating a branch, making atomic commits, validating, pushing, opening or updating a PR, and handling issue-linked review/CI follow-up. Use related skills or integrations when available; otherwise inspect the repository, issue, PR, CI, and review context directly with the available tools.
 license: MIT
-compatibility: Requires git and GitHub CLI access for full issue-to-PR workflows. Works best in coding agents with shell, file editing, and repository context.
 ---
 
 # GH Implement Issue
@@ -22,6 +21,7 @@ Use this when the job is not just "make a patch", but "implement the GitHub issu
 2. Confirm the implementation contract.
    - Restate the concrete behavior, non-goals, and expected output.
    - Check whether the issue number is actually an issue, PR, duplicate, stale branch, or follow-up.
+   - When the target is a GitHub issue you will implement, assign yourself before branch planning or code edits: `gh issue edit <issue-number-or-url> --add-assignee "@me"` (or an equivalent GitHub API/UI action). Do not remove existing assignees. If assignment is impossible because the target is not an issue or permissions are missing, stop and report the blocker before implementation.
    - For cross-repo changes, inspect the upstream contract before patching the downstream repo.
 
 3. Plan the branch and commit slices.
