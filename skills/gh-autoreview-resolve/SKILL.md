@@ -35,11 +35,11 @@ Poll about every 15–30 seconds and keep the user informed during longer waits.
 
 - `eyes > 0`: review is still running; keep waiting.
 - `thumbs_up > 0`: no-issue pass, unless unresolved threads still exist.
-- `outcome: passed`: accept either thumbs-up or an explicit connector response such as “Didn't find any major issues.”
+- `outcome: passed`: accept either thumbs-up or an explicit connector response such as “Didn't find any major issues,” provided the response applies to the current head.
 - `outcome: review_feedback`: inspect every unresolved thread.
 - `outcome: review_response`: inspect the response and thread state; do not assume pass or failure.
 - `outcome: not_started_or_pending`: allow short propagation time, then diagnose configuration or request state without posting duplicates.
-- `pagination_incomplete: true`: fetch the remaining pages before declaring completion.
+- `outcome: pagination_incomplete` or `pagination_incomplete: true`: fetch the remaining pages before declaring completion.
 
 Check that the review applies to the current head. A stale or outdated anchor is evidence to reassess, not a reason to edit blindly.
 

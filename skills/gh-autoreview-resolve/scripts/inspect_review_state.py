@@ -21,6 +21,7 @@ CLEAN_RESPONSE_MARKERS = (
     "did not find any major issues",
     "no major issues found",
 )
+REVIEWED_COMMIT_RE = re.compile(r"reviewed commit:\s*`?([0-9a-f]{7,40})", re.IGNORECASE)
 
 
 class GhError(RuntimeError):
@@ -120,6 +121,23 @@ def reaction_counts(
     return counts
 
 
+def merge_reaction_counts(*counts: dict[str, int]) -> dict[str, int]:
+    return {
+        key: sum(item.get(key, 0) for item in counts)
+        for key in ("eyes", "thumbs_up")
+    }
+
+
+def response_reviews_head(item: dict[str, Any], head_oid: str | None) -> bool:
+    if not head_oid:
+        return False
+    commit_oid = str((item.get("commit") or {}).get("oid") or "")
+    if commit_oid:
+        return commit_oid.casefold() == head_oid.casefold()
+    match = REVIEWED_COMMIT_RE.search(str(item.get("body") or ""))
+    return bool(match and head_oid.casefold().startswith(match.group(1).casefold()))
+
+
 def clip(value: str | None, limit: int) -> str:
     text = value or ""
     if len(text) <= limit:
@@ -134,9 +152,12 @@ def classify_review_state(
     thumbs_up: int,
     clean_response: bool,
     connector_response: bool,
+    pagination_incomplete: bool = False,
 ) -> str:
     if unresolved_count:
         return "review_feedback"
+    if pagination_incomplete:
+        return "pagination_incomplete"
     if thumbs_up or clean_response:
         return "passed"
     if connector_response:
@@ -154,11 +175,46 @@ def self_test() -> None:
         ({"unresolved_count": 1, "eyes": 0, "thumbs_up": 1, "clean_response": True, "connector_response": True}, "review_feedback"),
         ({"unresolved_count": 0, "eyes": 0, "thumbs_up": 0, "clean_response": False, "connector_response": True}, "review_response"),
         ({"unresolved_count": 0, "eyes": 0, "thumbs_up": 0, "clean_response": False, "connector_response": False}, "not_started_or_pending"),
+        ({"unresolved_count": 0, "eyes": 0, "thumbs_up": 1, "clean_response": True, "connector_response": True, "pagination_incomplete": True}, "pagination_incomplete"),
+        ({"unresolved_count": 1, "eyes": 0, "thumbs_up": 0, "clean_response": False, "connector_response": False, "pagination_incomplete": True}, "review_feedback"),
     ]
     for inputs, expected in cases:
         actual = classify_review_state(**inputs)
         if actual != expected:
             raise AssertionError(f"expected {expected}, got {actual} for {inputs}")
+    minimum = parse_time("2026-07-24T00:00:00Z")
+    combined = merge_reaction_counts(
+        reaction_counts([
+            {
+                "content": "EYES",
+                "createdAt": "2026-07-24T00:00:01Z",
+                "user": {"login": "chatgpt-codex-connector"},
+            },
+            {
+                "content": "THUMBS_UP",
+                "createdAt": "2026-07-23T23:59:59Z",
+                "user": {"login": "chatgpt-codex-connector"},
+            },
+        ], minimum),
+        reaction_counts([
+            {
+                "content": "THUMBS_UP",
+                "createdAt": "2026-07-24T00:00:02Z",
+                "user": {"login": "chatgpt-codex-connector"},
+            },
+        ], minimum),
+    )
+    if combined != {"eyes": 1, "thumbs_up": 1}:
+        raise AssertionError(f"expected combined reactions, got {combined}")
+    head_oid = "abcdef0123456789abcdef0123456789abcdef01"
+    if not response_reviews_head({"commit": {"oid": head_oid}}, head_oid):
+        raise AssertionError("expected matching review commit to apply to the current head")
+    if not response_reviews_head({"body": "Reviewed commit: `abcdef0`"}, head_oid):
+        raise AssertionError("expected reviewed commit marker to apply to the current head")
+    if response_reviews_head({"body": "Didn't find any major issues."}, head_oid):
+        raise AssertionError("expected an unanchored response to fail closed")
+    if response_reviews_head({"commit": {"oid": "1234567"}}, head_oid):
+        raise AssertionError("expected a stale review commit to fail closed")
     print("inspect_review_state self-test passed")
 
 
@@ -268,10 +324,11 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
     ]
     active_request = max(eligible_requests, key=lambda item: item.get("createdAt") or "", default=None)
     trigger_time = parse_time(active_request.get("createdAt")) if active_request else after
-    trigger_reaction_connection = active_request.get("reactions") if active_request else pr.get("reactions")
-    trigger_reactions = reaction_counts(
-        (trigger_reaction_connection or {}).get("nodes"),
-        trigger_time,
+    pr_reaction_connection = pr.get("reactions") or {}
+    request_reaction_connection = (active_request or {}).get("reactions") or {}
+    trigger_reactions = merge_reaction_counts(
+        reaction_counts(pr_reaction_connection.get("nodes"), trigger_time),
+        reaction_counts(request_reaction_connection.get("nodes"), trigger_time),
     )
 
     reviews = (pr.get("reviews") or {}).get("nodes") or []
@@ -317,21 +374,24 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
             ],
         })
 
-    connector_bodies = [item.get("body") or "" for item in connector_issue_comments]
-    connector_bodies.extend(item.get("body") or "" for item in connector_reviews)
+    connector_responses = [*connector_issue_comments, *connector_reviews]
+    clean_response_candidates = [
+        item for item in connector_responses
+        if any(
+            marker in str(item.get("body") or "").casefold()
+            for marker in CLEAN_RESPONSE_MARKERS
+        )
+    ]
+    current_head_oid = pr.get("headRefOid")
     clean_response = any(
-        marker in body.casefold()
-        for body in connector_bodies
-        for marker in CLEAN_RESPONSE_MARKERS
+        response_reviews_head(item, current_head_oid)
+        for item in clean_response_candidates
+    )
+    stale_clean_response = any(
+        not response_reviews_head(item, current_head_oid)
+        for item in clean_response_candidates
     )
     connector_response = bool(connector_issue_comments or connector_reviews or connector_thread_response)
-    outcome = classify_review_state(
-        unresolved_count=len(unresolved_threads),
-        eyes=trigger_reactions["eyes"],
-        thumbs_up=trigger_reactions["thumbs_up"],
-        clean_response=clean_response,
-        connector_response=connector_response,
-    )
 
     commit_node = (((pr.get("commits") or {}).get("nodes") or [{}])[-1].get("commit") or {})
     rollup = commit_node.get("statusCheckRollup") or {}
@@ -341,10 +401,18 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
         bool((pr.get("reviews") or {}).get("pageInfo", {}).get("hasPreviousPage")),
         bool((pr.get("reviewThreads") or {}).get("pageInfo", {}).get("hasNextPage")),
         bool((rollup.get("contexts") or {}).get("pageInfo", {}).get("hasNextPage")),
-        bool((pr.get("reactions") or {}).get("pageInfo", {}).get("hasPreviousPage")),
-        bool((trigger_reaction_connection or {}).get("pageInfo", {}).get("hasPreviousPage")),
+        bool(pr_reaction_connection.get("pageInfo", {}).get("hasPreviousPage")),
+        bool(request_reaction_connection.get("pageInfo", {}).get("hasPreviousPage")),
         nested_pagination,
     ])
+    outcome = classify_review_state(
+        unresolved_count=len(unresolved_threads),
+        eyes=trigger_reactions["eyes"],
+        thumbs_up=trigger_reactions["thumbs_up"],
+        clean_response=clean_response,
+        connector_response=connector_response,
+        pagination_incomplete=pagination_incomplete,
+    )
 
     return {
         "repository": repository,
@@ -371,6 +439,7 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
         "review": {
             "outcome": outcome,
             "clean_response": clean_response,
+            "stale_clean_response": stale_clean_response,
             "connector_response": connector_response,
             "unresolved_count": len(unresolved_threads),
             "unresolved_threads": unresolved_threads,

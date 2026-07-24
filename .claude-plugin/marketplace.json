@@ -9,7 +9,7 @@
       "name": "comfuture-agent-skills",
       "source": "./",
       "description": "Agent skills for GitHub workflows, review resolution, and writing strategy.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "author": {
         "name": "comfuture"
       },
