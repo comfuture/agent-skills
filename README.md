@@ -1,7 +1,7 @@
 # Agent Skills
 
-Personal Agent Skills for GitHub issue creation, issue-to-PR workflows, and
-writing strategy.
+Personal Agent Skills for GitHub issue creation, issue-to-PR workflows,
+automated review resolution, and writing strategy.
 
 This repository is maintained primarily so I can sync my own agent skills across
 machines. It is public so other people can inspect, adapt, or install the
@@ -27,7 +27,7 @@ The easiest Codex path is the built-in `$skill-installer` skill. Ask it to
 install the skill folders from this repository:
 
 ```text
-$skill-installer Install skills/issue-creator, skills/gh-implement-issue, and skills/writing-strategy from comfuture/agent-skills.
+$skill-installer Install skills/issue-creator, skills/gh-implement-issue, skills/gh-autoreview-resolve, and skills/writing-strategy from comfuture/agent-skills.
 ```
 
 After installation, restart Codex to pick up new skills.
@@ -41,6 +41,7 @@ You can also give `$skill-installer` direct GitHub paths:
 ```text
 $skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/issue-creator
 $skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-implement-issue
+$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-autoreview-resolve
 $skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/writing-strategy
 ```
 
@@ -101,6 +102,7 @@ GitHub CLI v2.90.0+ includes `gh skill`.
 ```bash
 gh skill install comfuture/agent-skills issue-creator --agent claude-code --scope user
 gh skill install comfuture/agent-skills gh-implement-issue --agent codex --scope user
+gh skill install comfuture/agent-skills gh-autoreview-resolve --agent codex --scope user
 gh skill install comfuture/agent-skills writing-strategy --agent codex --scope user
 ```
 
@@ -120,7 +122,8 @@ gh skill install comfuture/agent-skills issue-creator --pin <tag-or-commit>
 
 Claude Code plugins are namespaced, so installed skills are invoked as
 `/comfuture-agent-skills:issue-creator` and
-`/comfuture-agent-skills:gh-implement-issue`, or
+`/comfuture-agent-skills:gh-implement-issue`,
+`/comfuture-agent-skills:gh-autoreview-resolve`, or
 `/comfuture-agent-skills:writing-strategy`.
 
 Add this repository as a plugin marketplace:
@@ -158,6 +161,8 @@ gemini skills install https://github.com/comfuture/agent-skills.git --consent
   GitHub issues.
 - `gh-implement-issue`: Implement a GitHub issue through a validated
   branch-to-PR workflow.
+- `gh-autoreview-resolve`: Run a bounded automated-review loop for a pull
+  request, resolve validated in-scope feedback, and optionally merge.
 - `writing-strategy`: Choose a narrative strategy from a curated bilingual
   strategy set and produce a Markdown outline or table of contents.
 
