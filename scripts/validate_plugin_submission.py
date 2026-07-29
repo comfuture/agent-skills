@@ -6,6 +6,8 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
+import zipfile
 from pathlib import Path
 
 
@@ -26,6 +28,7 @@ def main() -> None:
     cases = json.loads(TEST_CASES.read_text(encoding="utf-8"))
     interface = manifest["interface"]
 
+    require(isinstance(interface, dict), "plugin interface must be an object")
     require(manifest["name"] == "develoop", "plugin name mismatch")
     require(manifest["version"] == "0.1.0", "submission version mismatch")
     require(
@@ -86,6 +89,43 @@ def main() -> None:
         text=True,
     )
     require(sync.returncode == 0, sync.stdout + sync.stderr)
+
+    with tempfile.TemporaryDirectory() as temporary:
+        archive = Path(temporary) / "develoop-openai.zip"
+        build = subprocess.run(
+            [
+                sys.executable,
+                "scripts/build_develoop_openai_bundle.py",
+                "--output",
+                str(archive),
+            ],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        require(build.returncode == 0, build.stdout + build.stderr)
+        with zipfile.ZipFile(archive) as bundle:
+            names = set(bundle.namelist())
+            require(
+                ".codex-plugin/plugin.json" in names,
+                "OpenAI bundle is missing the Codex manifest",
+            )
+            require(
+                "plugin.json" not in names,
+                "OpenAI bundle must exclude the Antigravity manifest",
+            )
+            require(
+                ".claude-plugin/plugin.json" not in names,
+                "OpenAI bundle must exclude the Claude manifest",
+            )
+            archived_manifest = json.loads(
+                bundle.read(".codex-plugin/plugin.json").decode("utf-8")
+            )
+            require(
+                isinstance(archived_manifest.get("interface"), dict),
+                "OpenAI bundle interface must be an object",
+            )
 
     print("Develoop public-submission payload is valid (5 positive, 3 negative).")
 

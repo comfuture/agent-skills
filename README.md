@@ -131,6 +131,8 @@ guarantees or warranty. Pin a tag or commit when repeatability matters.
 - `.claude-plugin/marketplace.json`: Claude Code repository marketplace.
 - `scripts/sync_develoop_plugin.py`: exact standalone-to-plugin sync and parity
   check.
+- `scripts/build_develoop_openai_bundle.py`: deterministic OpenAI submission
+  ZIP that excludes Claude Code and Antigravity compatibility manifests.
 - `website/`: public product, support, privacy, terms, and release pages.
 
 When a canonical standalone skill changes, refresh and verify the plugin copy:
@@ -154,6 +156,8 @@ python3 scripts/sync_develoop_plugin.py --write
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests
 PYTHONDONTWRITEBYTECODE=1 python3 skills/gh-autoreview-resolve/scripts/inspect_review_state.py --self-test
 python3 scripts/sync_develoop_plugin.py --check
+python3 scripts/build_develoop_openai_bundle.py \
+  --output /tmp/develoop-openai.zip
 npx skills add . --list
 gh skill publish --dry-run
 claude plugin validate plugins/develoop --strict
