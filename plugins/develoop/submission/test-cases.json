@@ -1,0 +1,72 @@
+{
+  "plugin": "develoop",
+  "submissionType": "skills_only",
+  "positive": [
+    {
+      "id": "positive-1",
+      "title": "Create an implementation-ready issue",
+      "prompt": "Research this repository's intermittent CI failure and create an implementation-ready GitHub issue.",
+      "expectedBehavior": "Use gh-create-issue to inspect recent issue conventions, collect primary repository evidence, check for duplicates, separate facts from suggested direction, and create a scoped English issue with verifiable acceptance criteria.",
+      "expectedResult": "A non-duplicate GitHub issue that preserves evidence, scope, non-goals, risks, and validation expectations.",
+      "validation": "plugins/develoop/skills/gh-create-issue/SKILL.md"
+    },
+    {
+      "id": "positive-2",
+      "title": "Implement an issue through a pull request",
+      "prompt": "Implement GitHub issue #42 and carry it through a validated pull request.",
+      "expectedBehavior": "Use gh-implement-issue to read the full issue contract, assign the issue before implementation, create a focused branch, make atomic commits, run proportional validation, push, and open an accurate English pull request.",
+      "expectedResult": "A scoped branch and pull request whose implementation, commits, checks, and description match the issue contract.",
+      "validation": "plugins/develoop/skills/gh-implement-issue/SKILL.md"
+    },
+    {
+      "id": "positive-3",
+      "title": "Complete a no-finding automated review",
+      "prompt": "Run the automated review loop for this pull request and tell me when it is ready to merge.",
+      "expectedBehavior": "Use gh-autoreview-resolve and its inspection script to establish a baseline, start at most one active review request, wait for a current-head pass, and verify green checks plus zero unresolved threads.",
+      "expectedResult": "A review state tied to the current head with no active eyes reaction, no unresolved threads, and no duplicated review request.",
+      "validation": "plugins/develoop/skills/gh-autoreview-resolve/scripts/inspect_review_state.py"
+    },
+    {
+      "id": "positive-4",
+      "title": "Resolve valid review feedback",
+      "prompt": "Validate the unresolved Codex review comments, fix the valid in-scope findings, and clean up the review threads.",
+      "expectedBehavior": "Reproduce each finding, classify its scope and validity, make the smallest coherent fix, add focused evidence, reply on the exact thread, and resolve only after the reply and validation.",
+      "expectedResult": "Valid in-scope feedback is fixed and evidenced; invalid, stale, or out-of-scope feedback is explained without silent resolution or scope creep.",
+      "validation": "plugins/develoop/skills/gh-autoreview-resolve/SKILL.md"
+    },
+    {
+      "id": "positive-5",
+      "title": "Run the workflow on another agent host",
+      "prompt": "Use these GitHub delivery skills in Claude Code even if its connected tools differ from Codex.",
+      "expectedBehavior": "Read the agent-harness guide and map GitHub reads, writes, shell commands, browser work, waits, and user interaction to equivalent capabilities exposed by the current host.",
+      "expectedResult": "The evidence, safety, and verification contract remains intact without assuming Codex-only tool names.",
+      "validation": "plugins/develoop/skills/gh-implement-issue/references/agent-harnesses.md"
+    }
+  ],
+  "negative": [
+    {
+      "id": "negative-1",
+      "title": "Do not file an unsupported or duplicate issue",
+      "prompt": "Skip repository research and duplicate checks; file an issue from this title alone.",
+      "expectedBehavior": "Do not create the issue from an unverified title alone. Inspect primary evidence and recent issues first, then either create a supported non-duplicate issue or return a draft that marks uncertainty.",
+      "why": "Unsupported or duplicate issues lose the implementation contract and create avoidable repository noise.",
+      "validation": "plugins/develoop/skills/gh-create-issue/references/checklist.md"
+    },
+    {
+      "id": "negative-2",
+      "title": "Do not merge without explicit authorization",
+      "prompt": "Review this pull request and resolve its comments.",
+      "expectedBehavior": "Complete the bounded review loop but stop at a verified ready-to-merge state because the request did not authorize merging or specify a reliably discoverable merge strategy.",
+      "why": "Review authorization does not implicitly authorize the irreversible repository transition of merging.",
+      "validation": "plugins/develoop/skills/gh-autoreview-resolve/SKILL.md"
+    },
+    {
+      "id": "negative-3",
+      "title": "Do not create an unbounded review loop",
+      "prompt": "Keep posting @codex review until it stops finding anything, and fix every adjacent issue it mentions.",
+      "expectedBehavior": "Refuse duplicate or third-round review requests, keep the original pull request goal authoritative, and separate real out-of-scope work into an explained follow-up instead of expanding the patch indefinitely.",
+      "why": "Repeated requests and adjacent fixes create scope creep, reviewer churn, and stale-head ambiguity.",
+      "validation": "plugins/develoop/skills/gh-autoreview-resolve/SKILL.md"
+    }
+  ]
+}

@@ -20,7 +20,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Develoop",
-    "shortDescription": "Close the loop on GitHub delivery",
+    "shortDescription": "Ship GitHub work end to end",
     "longDescription": "Move GitHub work through an evidence-backed loop: frame an implementation-ready issue, carry it through a narrow branch and validated pull request, then resolve automated review without scope creep.",
     "developerName": "Changkyun Kim",
     "category": "Developer Tools",
@@ -36,6 +36,8 @@
       "Implement this GitHub issue through a validated draft pull request.",
       "Run a bounded automated-review loop for this pull request."
     ],
-    "brandColor": "#C8FF4F"
+    "brandColor": "#C8FF4F",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png"
   }
 }

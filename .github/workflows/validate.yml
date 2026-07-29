@@ -25,3 +25,7 @@ jobs:
           python
           plugins/develoop/skills/gh-autoreview-resolve/scripts/inspect_review_state.py
           --self-test
+      - name: Validate public Marketplace submission payload
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python scripts/validate_plugin_submission.py
