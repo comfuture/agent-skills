@@ -22,6 +22,7 @@ CLEAN_RESPONSE_MARKERS = (
     "no major issues found",
 )
 REVIEWED_COMMIT_RE = re.compile(r"reviewed commit:\s*`?([0-9a-f]{7,40})", re.IGNORECASE)
+REVIEW_HEAD_RE = re.compile(r"review head:\s*`?([0-9a-f]{7,40})", re.IGNORECASE)
 
 
 class GhError(RuntimeError):
@@ -98,11 +99,6 @@ def at_or_after(value: str | None, minimum: datetime | None) -> bool:
     return parsed is not None and parsed >= minimum
 
 
-def latest_time(*values: datetime | None) -> datetime | None:
-    present = [value for value in values if value is not None]
-    return max(present) if present else None
-
-
 def is_connector(author: str | None) -> bool:
     login = (author or "").casefold()
     return any(marker in login for marker in CONNECTOR_MARKERS)
@@ -133,14 +129,28 @@ def merge_reaction_counts(*counts: dict[str, int]) -> dict[str, int]:
     }
 
 
+def body_reviews_head(
+    item: dict[str, Any],
+    head_oid: str | None,
+    marker: re.Pattern[str],
+) -> bool:
+    if not head_oid:
+        return False
+    match = marker.search(str(item.get("body") or ""))
+    return bool(match and head_oid.casefold().startswith(match.group(1).casefold()))
+
+
 def response_reviews_head(item: dict[str, Any], head_oid: str | None) -> bool:
     if not head_oid:
         return False
     commit_oid = str((item.get("commit") or {}).get("oid") or "")
     if commit_oid:
         return commit_oid.casefold() == head_oid.casefold()
-    match = REVIEWED_COMMIT_RE.search(str(item.get("body") or ""))
-    return bool(match and head_oid.casefold().startswith(match.group(1).casefold()))
+    return body_reviews_head(item, head_oid, REVIEWED_COMMIT_RE)
+
+
+def request_reviews_head(item: dict[str, Any], head_oid: str | None) -> bool:
+    return body_reviews_head(item, head_oid, REVIEW_HEAD_RE)
 
 
 def clip(value: str | None, limit: int) -> str:
@@ -211,22 +221,19 @@ def self_test() -> None:
     )
     if combined != {"eyes": 1, "thumbs_up": 1}:
         raise AssertionError(f"expected combined reactions, got {combined}")
-    head_time = parse_time("2026-07-24T00:00:03Z")
-    current_reactions = reaction_counts([
-        {
-            "content": "THUMBS_UP",
-            "createdAt": "2026-07-24T00:00:02Z",
-            "user": {"login": "chatgpt-codex-connector"},
-        },
-        {
-            "content": "EYES",
-            "createdAt": "2026-07-24T00:00:04Z",
-            "user": {"login": "chatgpt-codex-connector"},
-        },
-    ], latest_time(minimum, head_time))
-    if current_reactions != {"eyes": 1, "thumbs_up": 0}:
-        raise AssertionError(f"expected stale-head reactions to be ignored, got {current_reactions}")
     head_oid = "abcdef0123456789abcdef0123456789abcdef01"
+    if not request_reviews_head(
+        {"body": "@codex review\n\nReview head: `abcdef0`"},
+        head_oid,
+    ):
+        raise AssertionError("expected a matching review request marker to anchor reactions")
+    if request_reviews_head(
+        {"body": "@codex review\n\nReview head: `1234567`"},
+        head_oid,
+    ):
+        raise AssertionError("expected a stale review request marker to fail closed")
+    if request_reviews_head({"body": "@codex review"}, head_oid):
+        raise AssertionError("expected an unanchored review request to fail closed")
     if not response_reviews_head({"commit": {"oid": head_oid}}, head_oid):
         raise AssertionError("expected matching review commit to apply to the current head")
     if not response_reviews_head({"body": "Reviewed commit: `abcdef0`"}, head_oid):
@@ -303,7 +310,6 @@ query($owner:String!, $name:String!, $number:Int!) {
         nodes {
           commit {
             oid
-            committedDate
             statusCheckRollup {
               state
               contexts(first:100) {
@@ -346,13 +352,21 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
     active_request = max(eligible_requests, key=lambda item: item.get("createdAt") or "", default=None)
     trigger_time = parse_time(active_request.get("createdAt")) if active_request else after
     commit_node = (((pr.get("commits") or {}).get("nodes") or [{}])[-1].get("commit") or {})
-    reaction_minimum = latest_time(trigger_time, parse_time(commit_node.get("committedDate")))
+    current_head_oid = pr.get("headRefOid")
+    reaction_head_anchored = bool(
+        active_request and request_reviews_head(active_request, current_head_oid)
+    )
     pr_reaction_connection = pr.get("reactions") or {}
     request_reaction_connection = (active_request or {}).get("reactions") or {}
-    trigger_reactions = merge_reaction_counts(
-        reaction_counts(pr_reaction_connection.get("nodes"), reaction_minimum),
-        reaction_counts(request_reaction_connection.get("nodes"), reaction_minimum),
+    observed_reactions = merge_reaction_counts(
+        reaction_counts(pr_reaction_connection.get("nodes"), trigger_time),
+        reaction_counts(request_reaction_connection.get("nodes"), trigger_time),
     )
+    trigger_reactions = dict(observed_reactions)
+    ignored_thumbs_up = 0
+    if not reaction_head_anchored:
+        ignored_thumbs_up = trigger_reactions["thumbs_up"]
+        trigger_reactions["thumbs_up"] = 0
 
     reviews = (pr.get("reviews") or {}).get("nodes") or []
     connector_issue_comments = [
@@ -405,7 +419,6 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
             for marker in CLEAN_RESPONSE_MARKERS
         )
     ]
-    current_head_oid = pr.get("headRefOid")
     clean_response = any(
         response_reviews_head(item, current_head_oid)
         for item in clean_response_candidates
@@ -457,6 +470,9 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
             },
             "after": after.isoformat().replace("+00:00", "Z") if after else None,
             "reactions": trigger_reactions,
+            "observed_reactions": observed_reactions,
+            "reaction_head_anchored": reaction_head_anchored,
+            "ignored_thumbs_up": ignored_thumbs_up,
         },
         "review": {
             "outcome": outcome,

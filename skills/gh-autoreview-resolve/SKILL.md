@@ -30,10 +30,15 @@ Do not merge unless the user explicitly requested it. If merge was requested but
 1. If the PR is a draft, run `gh pr ready <PR> --repo OWNER/REPO`. Do nothing if it is already ready.
 2. Record the UTC time immediately before the ready transition and inspect with `--after <ISO_TIME>` so old bot activity is not mistaken for the new review.
 3. Confirm review start from an `eyes` reaction on the PR or the active `@codex review...` comment. If feedback or a pass response arrives before eyes is sampled, accept that as a completed start race.
-4. If no start signal appears after a reasonable bounded wait, confirm there is no active request, then post exactly one `@codex review` comment. Never post another request while eyes is present.
-5. When the user supplied a review target, request it narrowly:
+4. If no start signal appears after a reasonable bounded wait, confirm there is no active request, then post exactly one `@codex review` comment. Include the current full head OID on its own `Review head:` line so a later reaction can be tied to that exact code. Never post another request while eyes is present.
+5. When the user supplied a review target, request it narrowly and keep the head marker:
 
-   `@codex review Focus on <specific contract, regression, or risk>.`
+   ```text
+   @codex review
+   Review head: `<full head OID>`
+
+   Focus on <specific contract, regression, or risk>.
+   ```
 
 Avoid leading the reviewer toward a predetermined implementation or inviting a repository-wide audit.
 
@@ -42,7 +47,8 @@ Avoid leading the reviewer toward a predetermined implementation or inviting a r
 Poll about every 15–30 seconds and keep the user informed during longer waits. Use the inspection script on every meaningful transition.
 
 - `eyes > 0`: review is still running; keep waiting.
-- `thumbs_up > 0`: no-issue pass, unless unresolved threads still exist.
+- `thumbs_up > 0`: no-issue pass tied to the current head, unless unresolved threads still exist.
+- `ignored_thumbs_up > 0`: a thumbs-up was observed without a matching `Review head:` anchor. Do not treat it as a pass; if the bounded explicit request has not been used, request review once with the current full head OID.
 - `outcome: passed`: accept either thumbs-up or an explicit connector response such as “Didn't find any major issues,” provided the response applies to the current head.
 - `outcome: review_feedback`: inspect every unresolved thread.
 - `outcome: review_response`: inspect the response and thread state; do not assume pass or failure.
