@@ -24,37 +24,73 @@ class InstallScriptTests(unittest.TestCase):
             text=True,
         )
 
-    def test_managed_install_removes_retired_issue_creator(self) -> None:
+    def make_legacy_issue_creator(self, codex_home: Path) -> Path:
+        retired = codex_home / "skills" / "issue-creator"
+        references = retired / "references"
+        references.mkdir(parents=True)
+        (retired / "SKILL.md").write_text(
+            """---
+name: issue-creator
+description: Create high-quality GitHub issues or issue drafts from repository evidence.
+---
+
+# Issue Creator
+""",
+            encoding="utf-8",
+        )
+        for name in ("checklist.md", "issue-structure.md", "research-and-evidence.md"):
+            (references / name).write_text(f"# {name}\n", encoding="utf-8")
+        return retired
+
+    def test_managed_install_archives_recognizable_issue_creator(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             codex_home = Path(temporary)
-            retired = codex_home / "skills" / "issue-creator"
+            retired = self.make_legacy_issue_creator(codex_home)
             unrelated = codex_home / "skills" / "user-skill"
-            retired.mkdir(parents=True)
             unrelated.mkdir(parents=True)
-            (retired / "SKILL.md").write_text("retired\n", encoding="utf-8")
             (unrelated / "SKILL.md").write_text("keep\n", encoding="utf-8")
 
             result = self.run_install(codex_home)
 
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertFalse(retired.exists())
+            self.assertTrue(
+                (codex_home / "retired-skills" / "issue-creator" / "SKILL.md").is_file()
+            )
             self.assertTrue((codex_home / "skills" / "gh-create-issue" / "SKILL.md").is_file())
             self.assertTrue((unrelated / "SKILL.md").is_file())
 
-    def test_dry_run_reports_migration_without_removing_it(self) -> None:
+    def test_dry_run_reports_archive_without_moving_it(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             codex_home = Path(temporary)
-            retired = codex_home / "skills" / "issue-creator"
-            retired.mkdir(parents=True)
+            retired = self.make_legacy_issue_creator(codex_home)
+            destination = codex_home / "retired-skills" / "issue-creator"
 
             result = self.run_install(codex_home, "--dry-run")
 
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn(
-                f"Would remove retired managed skill {retired}/",
+                f"Would archive retired managed skill {retired}/ -> {destination}/",
                 result.stdout,
             )
             self.assertTrue(retired.is_dir())
+            self.assertFalse(destination.exists())
+
+    def test_managed_install_preserves_unrecognized_issue_creator(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            codex_home = Path(temporary)
+            existing = codex_home / "skills" / "issue-creator"
+            existing.mkdir(parents=True)
+            (existing / "SKILL.md").write_text(
+                "---\nname: issue-creator\n---\n\n# A different skill\n",
+                encoding="utf-8",
+            )
+
+            result = self.run_install(codex_home)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertTrue((existing / "SKILL.md").is_file())
+            self.assertIn("Preserving unrecognized skill directory", result.stderr)
 
 
 if __name__ == "__main__":
