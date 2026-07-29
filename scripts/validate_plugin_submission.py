@@ -16,6 +16,14 @@ PLUGIN = ROOT / "plugins" / "develoop"
 MANIFEST = PLUGIN / ".codex-plugin" / "plugin.json"
 TEST_CASES = PLUGIN / "submission" / "test-cases.json"
 RELEASE_NOTES = PLUGIN / "submission" / "release-notes.md"
+OPENAI_INTERFACE_FIELDS = {
+    "displayName",
+    "shortDescription",
+    "longDescription",
+    "developerName",
+    "composerIcon",
+    "logo",
+}
 
 
 def require(condition: bool, message: str) -> None:
@@ -109,6 +117,11 @@ def main() -> None:
         with zipfile.ZipFile(archive) as bundle:
             names = set(bundle.namelist())
             require(
+                ".codex-plugin/" in names
+                and bundle.getinfo(".codex-plugin/").is_dir(),
+                "OpenAI bundle must include standard directory entries",
+            )
+            require(
                 ".codex-plugin/plugin.json" in names,
                 "OpenAI bundle is missing the Codex manifest",
             )
@@ -126,6 +139,18 @@ def main() -> None:
             require(
                 isinstance(archived_manifest.get("interface"), dict),
                 "OpenAI bundle interface must be an object",
+            )
+            require(
+                set(archived_manifest["interface"]) == OPENAI_INTERFACE_FIELDS,
+                "OpenAI bundle interface must contain only portal-supported fields",
+            )
+            require(
+                bundle.getinfo(".codex-plugin/plugin.json").internal_attr & 1 == 1,
+                "OpenAI bundle manifest must be marked as text",
+            )
+            require(
+                bundle.getinfo("assets/logo.png").internal_attr & 1 == 0,
+                "OpenAI bundle logo must remain marked as binary",
             )
             executable = bundle.getinfo(
                 "skills/gh-autoreview-resolve/scripts/inspect_review_state.py"

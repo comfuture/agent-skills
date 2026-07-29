@@ -29,6 +29,25 @@ IGNORED_NAMES = {
 IGNORED_SUFFIXES = {
     ".pyc",
 }
+TEXT_FILENAMES = {
+    "LICENSE",
+}
+TEXT_SUFFIXES = {
+    ".json",
+    ".md",
+    ".py",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+OPENAI_INTERFACE_FIELDS = (
+    "displayName",
+    "shortDescription",
+    "longDescription",
+    "developerName",
+    "composerIcon",
+    "logo",
+)
 ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 
 
@@ -68,10 +87,30 @@ def included_files() -> list[Path]:
     return sorted(paths, key=lambda path: path.as_posix())
 
 
-def validate_payload(paths: list[Path]) -> None:
+def openai_submission_manifest() -> dict[str, object]:
     manifest = json.loads((PLUGIN / MANIFEST).read_text(encoding="utf-8"))
-    if not isinstance(manifest.get("interface"), dict):
+    interface = manifest.get("interface")
+    if not isinstance(interface, dict):
         raise SystemExit(".codex-plugin/plugin.json interface must be an object")
+
+    missing = [field for field in OPENAI_INTERFACE_FIELDS if field not in interface]
+    if missing:
+        raise SystemExit(
+            "OpenAI bundle interface is missing required fields: "
+            + ", ".join(missing)
+        )
+
+    return {
+        **manifest,
+        "interface": {
+            field: interface[field]
+            for field in OPENAI_INTERFACE_FIELDS
+        },
+    }
+
+
+def validate_payload(paths: list[Path]) -> None:
+    openai_submission_manifest()
 
     required = {
         MANIFEST,
@@ -103,6 +142,20 @@ def validate_payload(paths: list[Path]) -> None:
         raise SystemExit(f"OpenAI bundle includes compatibility manifests: {names}")
 
 
+def archive_directories(paths: list[Path]) -> list[Path]:
+    directories = {
+        parent
+        for path in paths
+        for parent in path.parents
+        if parent != Path(".")
+    }
+    return sorted(directories, key=lambda path: path.as_posix())
+
+
+def is_text_payload(path: Path) -> bool:
+    return path.name in TEXT_FILENAMES or path.suffix in TEXT_SUFFIXES
+
+
 def write_zip(output: Path, paths: list[Path]) -> None:
     output = output.expanduser().resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -112,14 +165,33 @@ def write_zip(output: Path, paths: list[Path]) -> None:
         compression=zipfile.ZIP_DEFLATED,
         compresslevel=9,
     ) as archive:
+        for relative in archive_directories(paths):
+            info = zipfile.ZipInfo(f"{relative.as_posix()}/", date_time=ZIP_TIMESTAMP)
+            info.compress_type = zipfile.ZIP_STORED
+            info.create_system = 3
+            info.external_attr = ((stat.S_IFDIR | 0o755) << 16) | 0x10
+            archive.writestr(info, b"")
+
         for relative in paths:
             source = PLUGIN / relative
             info = zipfile.ZipInfo(relative.as_posix(), date_time=ZIP_TIMESTAMP)
             info.compress_type = zipfile.ZIP_DEFLATED
             info.create_system = 3
+            info.internal_attr = 1 if is_text_payload(relative) else 0
             permissions = 0o755 if source.stat().st_mode & 0o111 else 0o644
             info.external_attr = (stat.S_IFREG | permissions) << 16
-            archive.writestr(info, source.read_bytes())
+            if relative == MANIFEST:
+                payload = (
+                    json.dumps(
+                        openai_submission_manifest(),
+                        ensure_ascii=False,
+                        indent=2,
+                    )
+                    + "\n"
+                ).encode("utf-8")
+            else:
+                payload = source.read_bytes()
+            archive.writestr(info, payload)
 
 
 def main() -> None:
