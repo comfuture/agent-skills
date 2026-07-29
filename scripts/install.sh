@@ -7,8 +7,9 @@ Usage: scripts/install.sh [--dry-run] [--no-agents] [skill ...]
 
 Copy managed skills from this repository into $CODEX_HOME/skills, defaulting to
 $HOME/.codex/skills. With no skill arguments, installs the skill names listed in
-managed-skills.txt. If that file is missing, falls back to every immediate
-repository directory that contains SKILL.md.
+managed-skills.txt and removes retired managed skill names. If that file is
+missing, falls back to every immediate repository directory that contains
+SKILL.md.
 
 Options:
   --dry-run     Print planned writes without changing files.
@@ -22,6 +23,7 @@ skills_root="$repo_root/skills"
 codex_home="${CODEX_HOME:-$HOME/.codex}"
 dry_run=0
 copy_agents=1
+managed_install=0
 skills=()
 
 while [[ $# -gt 0 ]]; do
@@ -101,6 +103,7 @@ sync_dir() {
 }
 
 if [[ "${#skills[@]}" -eq 0 ]]; then
+  managed_install=1
   discover_skills
 fi
 
@@ -115,6 +118,24 @@ fi
 
 if [[ "$dry_run" -eq 0 ]]; then
   mkdir -p "$codex_home/skills"
+fi
+
+if [[ "$managed_install" -eq 1 ]]; then
+  for skill in "${skills[@]}"; do
+    if [[ "$skill" != "gh-create-issue" ]]; then
+      continue
+    fi
+
+    legacy_dir="$codex_home/skills/issue-creator"
+    if [[ -e "$legacy_dir" || -L "$legacy_dir" ]]; then
+      if [[ "$dry_run" -eq 1 ]]; then
+        echo "Would remove retired managed skill $legacy_dir/"
+      else
+        rm -rf -- "$legacy_dir"
+      fi
+    fi
+    break
+  done
 fi
 
 for skill in "${skills[@]}"; do
