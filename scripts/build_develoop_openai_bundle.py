@@ -45,6 +45,15 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def validated_output_path(output: Path) -> Path:
+    resolved = output.expanduser().resolve()
+    try:
+        resolved.relative_to(PLUGIN.resolve())
+    except ValueError:
+        return resolved
+    raise SystemExit("--output must be outside plugins/develoop")
+
+
 def included_files() -> list[Path]:
     paths = set(INCLUDED_ROOT_FILES)
     for directory in INCLUDED_DIRECTORIES:
@@ -108,16 +117,18 @@ def write_zip(output: Path, paths: list[Path]) -> None:
             info = zipfile.ZipInfo(relative.as_posix(), date_time=ZIP_TIMESTAMP)
             info.compress_type = zipfile.ZIP_DEFLATED
             info.create_system = 3
-            info.external_attr = (stat.S_IFREG | 0o644) << 16
+            permissions = 0o755 if source.stat().st_mode & 0o111 else 0o644
+            info.external_attr = (stat.S_IFREG | permissions) << 16
             archive.writestr(info, source.read_bytes())
 
 
 def main() -> None:
     args = parse_args()
+    output = validated_output_path(args.output)
     paths = included_files()
     validate_payload(paths)
-    write_zip(args.output, paths)
-    print(f"Wrote {args.output.resolve()} ({len(paths)} files)")
+    write_zip(output, paths)
+    print(f"Wrote {output} ({len(paths)} files)")
 
 
 if __name__ == "__main__":

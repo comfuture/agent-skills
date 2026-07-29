@@ -92,10 +92,11 @@ def main() -> None:
 
     with tempfile.TemporaryDirectory() as temporary:
         archive = Path(temporary) / "develoop-openai.zip"
+        builder = "scripts/build_develoop_openai_bundle.py"
         build = subprocess.run(
             [
                 sys.executable,
-                "scripts/build_develoop_openai_bundle.py",
+                builder,
                 "--output",
                 str(archive),
             ],
@@ -126,6 +127,35 @@ def main() -> None:
                 isinstance(archived_manifest.get("interface"), dict),
                 "OpenAI bundle interface must be an object",
             )
+            executable = bundle.getinfo(
+                "skills/gh-autoreview-resolve/scripts/inspect_review_state.py"
+            )
+            require(
+                (executable.external_attr >> 16) & 0o111 == 0o111,
+                "OpenAI bundle must preserve executable script permissions",
+            )
+
+        internal_output = PLUGIN / "assets" / "must-not-be-created.zip"
+        rejected = subprocess.run(
+            [
+                sys.executable,
+                builder,
+                "--output",
+                str(internal_output),
+            ],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        require(
+            rejected.returncode != 0,
+            "OpenAI bundle builder must reject output inside the plugin",
+        )
+        require(
+            not internal_output.exists(),
+            "rejected internal output path must not be created",
+        )
 
     print("Develoop public-submission payload is valid (5 positive, 3 negative).")
 
