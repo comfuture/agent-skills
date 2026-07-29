@@ -25,7 +25,8 @@ const installs = [
   {
     host: "OpenAI / Codex",
     note: "OpenAI Curated Directory",
-    command: "Sign in, open the Develoop listing, and select Add.",
+    command: "codex plugin add develoop@openai-curated",
+    description: "Or sign in, open the Develoop listing, and select Add.",
     href: "https://chatgpt.com/plugins/plugins_6a69ee33e3048191ab7da89ec70dbbe2",
   },
   {
@@ -152,7 +153,10 @@ export default function Home() {
                 </div>
                 {install.href ? (
                   <section className="directory-install">
-                    <p>{install.command}</p>
+                    <pre>
+                      <code>{install.command}</code>
+                    </pre>
+                    <p>{install.description}</p>
                     <a href={install.href}>Open in Plugins Directory ↗</a>
                   </section>
                 ) : (

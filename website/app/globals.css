@@ -501,6 +501,12 @@ pre code {
   margin: 0;
 }
 
+.directory-install pre {
+  border-left: 0;
+  padding: 0;
+  width: 100%;
+}
+
 .directory-install a {
   background: var(--lime);
   color: var(--night);

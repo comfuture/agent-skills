@@ -29,7 +29,13 @@ part of Develoop's product description, search keywords, or starter prompts.
 
 ### OpenAI / Codex
 
-Install Develoop from the OpenAI Curated Directory:
+Install Develoop from the command line:
+
+```bash
+codex plugin add develoop@openai-curated
+```
+
+Or install it from the OpenAI Curated Directory:
 
 [Open Develoop in the OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6a69ee33e3048191ab7da89ec70dbbe2)
 and select **Add** after signing in.

@@ -31,6 +31,7 @@ test("renders Develoop and the four installation paths", async () => {
     /https:\/\/chatgpt\.com\/plugins\/plugins_6a69ee33e3048191ab7da89ec70dbbe2/,
   );
   assert.match(html, /OpenAI Curated Directory/);
+  assert.match(html, /codex plugin add develoop@openai-curated/);
   assert.doesNotMatch(html, /codex plugin marketplace add/);
   assert.match(html, /claude plugin install develoop@develoop/);
   assert.match(html, /agy plugins install https:\/\/github\.com\/comfuture\/agent-skills/);
