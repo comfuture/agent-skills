@@ -1,6 +1,6 @@
 ---
 name: gh-autoreview-resolve
-description: Run a bounded GitHub automated-review and resolution loop for a specified pull request. Use when Codex must mark a PR ready for review, confirm the automated reviewer started through an eyes reaction, wait for a thumbs-up or concrete review response, validate and address review threads, request a narrowly focused `@codex review` follow-up when warranted, prevent review scope creep through PR comments or an issue-creator follow-up, and optionally merge with the user's preferred strategy.
+description: Run a bounded GitHub automated-review and resolution loop for a specified pull request. Use when an agent must mark a PR ready for review, confirm the automated reviewer started through an eyes reaction, wait for a thumbs-up or concrete review response, validate and address review threads, request a narrowly focused `@codex review` follow-up when warranted, prevent review scope creep through PR comments or a gh-create-issue follow-up, and optionally merge with the user's preferred strategy.
 license: MIT
 ---
 
@@ -74,7 +74,7 @@ Do not automatically start a third explicit review round. Stop or split follow-u
 When stopping:
 
 1. If no separate issue is warranted, comment on the PR with the scope decision and evidence, then stop the loop.
-2. If the finding is real and deserves implementation, invoke `$issue-creator`. Research primary evidence, check for duplicates, create an implementation-ready English follow-up issue, comment its link and why it is separated, then stop this review line.
+2. If the finding is real and deserves implementation, invoke `gh-create-issue` using the current agent host's skill syntax. Research primary evidence, check for duplicates, create an implementation-ready English follow-up issue, comment its link and why it is separated, then stop this review line.
 3. If an in-scope release blocker remains unresolved, do not merge. Report the blocker.
 4. If only a non-blocking out-of-scope follow-up remains, the PR may proceed after the comment or issue link is recorded.
 

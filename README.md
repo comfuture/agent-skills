@@ -27,7 +27,7 @@ The easiest Codex path is the built-in `$skill-installer` skill. Ask it to
 install the skill folders from this repository:
 
 ```text
-$skill-installer Install skills/issue-creator, skills/gh-implement-issue, skills/gh-autoreview-resolve, and skills/writing-strategy from comfuture/agent-skills.
+$skill-installer Install skills/gh-create-issue, skills/gh-implement-issue, skills/gh-autoreview-resolve, and skills/writing-strategy from comfuture/agent-skills.
 ```
 
 After installation, restart Codex to pick up new skills.
@@ -39,7 +39,7 @@ Agent Skills directory.
 You can also give `$skill-installer` direct GitHub paths:
 
 ```text
-$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/issue-creator
+$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-create-issue
 $skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-implement-issue
 $skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-autoreview-resolve
 $skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/writing-strategy
@@ -57,7 +57,7 @@ git clone git@github.com:comfuture/agent-skills.git ~/Project/agent-skills
 Install only one managed skill:
 
 ```bash
-~/Project/agent-skills/scripts/install.sh issue-creator
+~/Project/agent-skills/scripts/install.sh gh-create-issue
 ```
 
 Preview without writing:
@@ -77,10 +77,10 @@ List available skills:
 npx skills add comfuture/agent-skills --list
 ```
 
-Install `issue-creator` globally for Claude Code:
+Install `gh-create-issue` globally for Claude Code:
 
 ```bash
-npx skills add comfuture/agent-skills --skill issue-creator -g -a claude-code -y
+npx skills add comfuture/agent-skills --skill gh-create-issue -g -a claude-code -y
 ```
 
 Install every skill for every detected agent:
@@ -100,7 +100,7 @@ npx skills add . --list
 GitHub CLI v2.90.0+ includes `gh skill`.
 
 ```bash
-gh skill install comfuture/agent-skills issue-creator --agent claude-code --scope user
+gh skill install comfuture/agent-skills gh-create-issue --agent claude-code --scope user
 gh skill install comfuture/agent-skills gh-implement-issue --agent codex --scope user
 gh skill install comfuture/agent-skills gh-autoreview-resolve --agent codex --scope user
 gh skill install comfuture/agent-skills writing-strategy --agent codex --scope user
@@ -115,13 +115,13 @@ gh skill install comfuture/agent-skills --all --agent universal --scope user
 Pin a version when repeatability matters:
 
 ```bash
-gh skill install comfuture/agent-skills issue-creator --pin <tag-or-commit>
+gh skill install comfuture/agent-skills gh-create-issue --pin <tag-or-commit>
 ```
 
 ## Install In Claude Code As A Plugin
 
 Claude Code plugins are namespaced, so installed skills are invoked as
-`/comfuture-agent-skills:issue-creator` and
+`/comfuture-agent-skills:gh-create-issue` and
 `/comfuture-agent-skills:gh-implement-issue`,
 `/comfuture-agent-skills:gh-autoreview-resolve`, or
 `/comfuture-agent-skills:writing-strategy`.
@@ -157,7 +157,7 @@ gemini skills install https://github.com/comfuture/agent-skills.git --consent
 
 ## Included Skills
 
-- `issue-creator`: Research context and draft or create implementation-ready
+- `gh-create-issue`: Research context and draft or create implementation-ready
   GitHub issues.
 - `gh-implement-issue`: Implement a GitHub issue through a validated
   branch-to-PR workflow.
@@ -176,8 +176,8 @@ If you edit a skill locally under `~/.codex/skills`, export it back to this
 repository before committing:
 
 ```bash
-~/Project/agent-skills/scripts/export-from-codex.sh issue-creator
-git -C ~/Project/agent-skills diff -- skills/issue-creator
+~/Project/agent-skills/scripts/export-from-codex.sh gh-create-issue
+git -C ~/Project/agent-skills diff -- skills/gh-create-issue
 ```
 
 The helper script allowlist is `managed-skills.txt`. `--delete` is applied only

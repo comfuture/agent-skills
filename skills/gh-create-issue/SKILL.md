@@ -1,13 +1,16 @@
 ---
-name: issue-creator
+name: gh-create-issue
 description: Create high-quality GitHub issues or issue drafts from repository evidence, user intent, and external documentation. Use when the user asks an agent to create, draft, file, open, or prepare an implementation issue, bug report, feature request, follow-up issue, or GitHub issue with researched facts, scope, non-goals, suggested direction, acceptance criteria, and validation notes.
 license: MIT
-compatibility: Works with Agent Skills-compatible coding agents. Creating issues directly requires GitHub CLI or an equivalent GitHub integration.
 ---
 
-# Issue Creator
+# GH Create Issue
 
 Create implementation-ready issues that preserve what was learned during investigation. Treat the issue as an engineering handoff: concrete enough for a future implementer to start safely, scoped enough to avoid accidental broad rewrites, and honest about uncertainties.
+
+Creating issues directly requires GitHub CLI or an equivalent authenticated
+GitHub integration. Without write access, produce a complete issue draft
+instead of claiming that an issue was created.
 
 ## Workflow
 
