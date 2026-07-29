@@ -98,6 +98,11 @@ def at_or_after(value: str | None, minimum: datetime | None) -> bool:
     return parsed is not None and parsed >= minimum
 
 
+def latest_time(*values: datetime | None) -> datetime | None:
+    present = [value for value in values if value is not None]
+    return max(present) if present else None
+
+
 def is_connector(author: str | None) -> bool:
     login = (author or "").casefold()
     return any(marker in login for marker in CONNECTOR_MARKERS)
@@ -206,6 +211,21 @@ def self_test() -> None:
     )
     if combined != {"eyes": 1, "thumbs_up": 1}:
         raise AssertionError(f"expected combined reactions, got {combined}")
+    head_time = parse_time("2026-07-24T00:00:03Z")
+    current_reactions = reaction_counts([
+        {
+            "content": "THUMBS_UP",
+            "createdAt": "2026-07-24T00:00:02Z",
+            "user": {"login": "chatgpt-codex-connector"},
+        },
+        {
+            "content": "EYES",
+            "createdAt": "2026-07-24T00:00:04Z",
+            "user": {"login": "chatgpt-codex-connector"},
+        },
+    ], latest_time(minimum, head_time))
+    if current_reactions != {"eyes": 1, "thumbs_up": 0}:
+        raise AssertionError(f"expected stale-head reactions to be ignored, got {current_reactions}")
     head_oid = "abcdef0123456789abcdef0123456789abcdef01"
     if not response_reviews_head({"commit": {"oid": head_oid}}, head_oid):
         raise AssertionError("expected matching review commit to apply to the current head")
@@ -283,6 +303,7 @@ query($owner:String!, $name:String!, $number:Int!) {
         nodes {
           commit {
             oid
+            committedDate
             statusCheckRollup {
               state
               contexts(first:100) {
@@ -324,11 +345,13 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
     ]
     active_request = max(eligible_requests, key=lambda item: item.get("createdAt") or "", default=None)
     trigger_time = parse_time(active_request.get("createdAt")) if active_request else after
+    commit_node = (((pr.get("commits") or {}).get("nodes") or [{}])[-1].get("commit") or {})
+    reaction_minimum = latest_time(trigger_time, parse_time(commit_node.get("committedDate")))
     pr_reaction_connection = pr.get("reactions") or {}
     request_reaction_connection = (active_request or {}).get("reactions") or {}
     trigger_reactions = merge_reaction_counts(
-        reaction_counts(pr_reaction_connection.get("nodes"), trigger_time),
-        reaction_counts(request_reaction_connection.get("nodes"), trigger_time),
+        reaction_counts(pr_reaction_connection.get("nodes"), reaction_minimum),
+        reaction_counts(request_reaction_connection.get("nodes"), reaction_minimum),
     )
 
     reviews = (pr.get("reviews") or {}).get("nodes") or []
@@ -393,7 +416,6 @@ def inspect(repository: str, number: int, after: datetime | None, body_limit: in
     )
     connector_response = bool(connector_issue_comments or connector_reviews or connector_thread_response)
 
-    commit_node = (((pr.get("commits") or {}).get("nodes") or [{}])[-1].get("commit") or {})
     rollup = commit_node.get("statusCheckRollup") or {}
     contexts = (rollup.get("contexts") or {}).get("nodes") or []
     pagination_incomplete = any([
