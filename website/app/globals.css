@@ -483,19 +483,40 @@ pre code {
   font-size: 0.74rem;
 }
 
-.directory-action {
-  color: var(--lime);
-  display: inline-block;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.72rem;
-  margin-top: 18px;
-  text-decoration: none;
-  text-transform: uppercase;
+.directory-install {
+  align-items: flex-start;
+  background: #050b09;
+  border-left: 2px solid var(--mint);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 22px;
 }
 
-.directory-action:hover,
-.directory-action:focus-visible {
-  color: var(--mint);
+.directory-install p {
+  color: #d7e6dc;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.74rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.directory-install a {
+  background: var(--lime);
+  color: var(--night);
+  font-size: 0.8rem;
+  font-weight: 720;
+  padding: 11px 14px;
+  text-decoration: none;
+  transition:
+    background 0.16s,
+    transform 0.16s;
+}
+
+.directory-install a:hover,
+.directory-install a:focus-visible {
+  background: var(--mint);
+  transform: translateY(-2px);
 }
 
 .bundle-note {

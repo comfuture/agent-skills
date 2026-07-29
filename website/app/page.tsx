@@ -150,14 +150,16 @@ export default function Home() {
                   <h3>{install.host}</h3>
                   <span>{install.note}</span>
                 </div>
-                <pre>
-                  <code>{install.command}</code>
-                </pre>
                 {install.href ? (
-                  <a className="directory-action" href={install.href}>
-                    Open in Plugins Directory <span aria-hidden="true">↗</span>
-                  </a>
-                ) : null}
+                  <section className="directory-install">
+                    <p>{install.command}</p>
+                    <a href={install.href}>Open in Plugins Directory ↗</a>
+                  </section>
+                ) : (
+                  <pre>
+                    <code>{install.command}</code>
+                  </pre>
+                )}
               </article>
             ))}
           </div>
