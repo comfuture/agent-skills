@@ -10,13 +10,20 @@ license: MIT
 
 Use this when the job is not just "make a patch", but "implement the GitHub issue and carry it to a validated PR-ready state". The output should be a branch/commit/PR state that matches the issue scope and a closeout that names validation and unresolved risk.
 
+## Adapt to the agent host
+
+Read [references/agent-harnesses.md](references/agent-harnesses.md) before
+choosing GitHub, browser, delegation, or user-interaction tools. Use equivalent
+capabilities exposed by the current host; command and tool names in this skill
+are examples, not hard dependencies.
+
 ## Workflow
 
 1. Establish context before editing.
    - Read repo `AGENTS.md` / local instructions.
    - Run `git status --short --branch` and protect unrelated dirty work.
    - Fetch the issue/PR/source-of-truth first: `gh issue view`, `gh pr view`, linked comments, upstream PRs, docs, or paired repositories.
-   - If the issue touches separable surfaces, use subagents for independent discovery, such as backend contract vs frontend UI vs upstream library behavior.
+   - If the issue touches separable surfaces and the current host plus repository instructions permit delegation, use subagents for independent discovery, such as backend contract vs frontend UI vs upstream library behavior. Otherwise perform the same discovery sequentially.
 
 2. Confirm the implementation contract.
    - Restate the concrete behavior, non-goals, and expected output.

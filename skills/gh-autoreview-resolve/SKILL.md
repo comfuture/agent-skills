@@ -8,6 +8,14 @@ license: MIT
 
 Move one specified pull request from draft through a conservative automated-review loop. Keep the PR's original implementation goal authoritative; do not turn review follow-up into an open-ended audit.
 
+## Adapt to the agent host
+
+Read [references/agent-harnesses.md](references/agent-harnesses.md) before
+choosing GitHub, waiting, or user-interaction tools. The `@codex review`
+mention in this workflow addresses GitHub's configured Codex reviewer; it does
+not require the agent executing this skill to be Codex. Do not post the mention
+unless the repository actually uses that reviewer.
+
 ## Establish the contract
 
 1. Read repository instructions, the linked issue, PR body, changed files, current head, checks, and existing review threads.

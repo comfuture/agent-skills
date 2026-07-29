@@ -12,6 +12,13 @@ Creating issues directly requires GitHub CLI or an equivalent authenticated
 GitHub integration. Without write access, produce a complete issue draft
 instead of claiming that an issue was created.
 
+## Adapt to the agent host
+
+Read [references/agent-harnesses.md](references/agent-harnesses.md) before
+choosing tools or invocation syntax. Treat named commands as one implementation
+of a capability: use the current host's connected GitHub integration when it
+offers the same read or write operation, and fall back to `gh` when it does not.
+
 ## Workflow
 
 1. Inspect issue style before writing.
@@ -50,6 +57,7 @@ instead of claiming that an issue was created.
 - Read `references/issue-structure.md` when drafting any issue body.
 - Read `references/research-and-evidence.md` when deciding what investigation to perform or how to word discovered facts.
 - Read `references/checklist.md` before creating or returning the final issue.
+- Read `references/agent-harnesses.md` before choosing host-specific tools or invocation syntax.
 
 ## Style Rules
 
