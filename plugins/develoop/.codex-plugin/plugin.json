@@ -1,0 +1,43 @@
+{
+  "name": "develoop",
+  "version": "0.1.0",
+  "description": "Create implementation-ready GitHub issues, ship validated pull requests, and resolve automated review without losing scope.",
+  "author": {
+    "name": "Changkyun Kim",
+    "email": "comfuture@gmail.com",
+    "url": "https://develoop.comfuture.chatgpt.site"
+  },
+  "homepage": "https://develoop.comfuture.chatgpt.site",
+  "repository": "https://github.com/comfuture/agent-skills",
+  "license": "MIT AND CC-BY-NC-SA-4.0",
+  "keywords": [
+    "github",
+    "issues",
+    "pull-requests",
+    "code-review",
+    "agent-skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Develoop",
+    "shortDescription": "Ship GitHub work end to end",
+    "longDescription": "Move GitHub work through an evidence-backed loop: frame an implementation-ready issue, carry it through a narrow branch and validated pull request, then resolve automated review without scope creep.",
+    "developerName": "Changkyun Kim",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://develoop.comfuture.chatgpt.site",
+    "privacyPolicyURL": "https://develoop.comfuture.chatgpt.site/privacy",
+    "termsOfServiceURL": "https://develoop.comfuture.chatgpt.site/terms",
+    "defaultPrompt": [
+      "Research this repository and create an implementation-ready GitHub issue.",
+      "Implement this GitHub issue through a validated draft pull request.",
+      "Run a bounded automated-review loop for this pull request."
+    ],
+    "brandColor": "#C8FF4F",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png"
+  }
+}

@@ -7,7 +7,8 @@ Usage: scripts/install.sh [--dry-run] [--no-agents] [skill ...]
 
 Copy managed skills from this repository into $CODEX_HOME/skills, defaulting to
 $HOME/.codex/skills. With no skill arguments, installs the skill names listed in
-managed-skills.txt. If that file is missing, falls back to every immediate
+managed-skills.txt and archives recognizable retired managed skills outside the
+discovery directory. If that file is missing, falls back to every immediate
 repository directory that contains SKILL.md.
 
 Options:
@@ -22,6 +23,7 @@ skills_root="$repo_root/skills"
 codex_home="${CODEX_HOME:-$HOME/.codex}"
 dry_run=0
 copy_agents=1
+managed_install=0
 skills=()
 
 while [[ $# -gt 0 ]]; do
@@ -100,7 +102,56 @@ sync_dir() {
   rsync -a --delete "$src/" "$dst/"
 }
 
+is_legacy_issue_creator() {
+  local legacy_dir="$1"
+  local skill_file="$legacy_dir/SKILL.md"
+
+  [[ -f "$skill_file" ]] || return 1
+  grep -Eq -- '^name:[[:space:]]*issue-creator[[:space:]]*$' "$skill_file" || return 1
+  grep -Fq -- '# Issue Creator' "$skill_file" || return 1
+  grep -Fq -- 'Create high-quality GitHub issues or issue drafts from repository evidence' "$skill_file" || return 1
+  [[ -f "$legacy_dir/references/checklist.md" ]] || return 1
+  [[ -f "$legacy_dir/references/issue-structure.md" ]] || return 1
+  [[ -f "$legacy_dir/references/research-and-evidence.md" ]] || return 1
+}
+
+next_retired_destination() {
+  local retired_root="$codex_home/retired-skills"
+  local destination="$retired_root/issue-creator"
+  local suffix=1
+
+  while [[ -e "$destination" || -L "$destination" ]]; do
+    destination="$retired_root/issue-creator.$suffix"
+    suffix=$((suffix + 1))
+  done
+  printf '%s\n' "$destination"
+}
+
+archive_legacy_issue_creator() {
+  local legacy_dir="$codex_home/skills/issue-creator"
+  local destination
+
+  if [[ ! -e "$legacy_dir" && ! -L "$legacy_dir" ]]; then
+    return
+  fi
+  if ! is_legacy_issue_creator "$legacy_dir"; then
+    echo "Preserving unrecognized skill directory $legacy_dir/; migrate it manually if appropriate." >&2
+    return
+  fi
+
+  destination="$(next_retired_destination)"
+  if [[ "$dry_run" -eq 1 ]]; then
+    echo "Would archive retired managed skill $legacy_dir/ -> $destination/"
+    return
+  fi
+
+  mkdir -p "$(dirname "$destination")"
+  mv -- "$legacy_dir" "$destination"
+  echo "Archived retired managed skill $legacy_dir/ -> $destination/"
+}
+
 if [[ "${#skills[@]}" -eq 0 ]]; then
+  managed_install=1
   discover_skills
 fi
 
@@ -115,6 +166,17 @@ fi
 
 if [[ "$dry_run" -eq 0 ]]; then
   mkdir -p "$codex_home/skills"
+fi
+
+if [[ "$managed_install" -eq 1 ]]; then
+  for skill in "${skills[@]}"; do
+    if [[ "$skill" != "gh-create-issue" ]]; then
+      continue
+    fi
+
+    archive_legacy_issue_creator
+    break
+  done
 fi
 
 for skill in "${skills[@]}"; do

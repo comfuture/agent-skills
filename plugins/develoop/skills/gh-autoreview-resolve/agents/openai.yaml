@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Auto Review Resolve"
+  short_description: "Run bounded GitHub review and resolution loops"
+  default_prompt: "Use $gh-autoreview-resolve to ready this PR, handle scoped automated review feedback, and merge it if requested."

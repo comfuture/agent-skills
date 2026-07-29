@@ -1,0 +1,4 @@
+interface:
+  display_name: "GH Create Issue"
+  short_description: "Draft evidence-backed implementation issues"
+  default_prompt: "Use $gh-create-issue to research context and create a high-quality GitHub issue."

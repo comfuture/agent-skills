@@ -1,4 +1,4 @@
 gh-autoreview-resolve
+gh-create-issue
 gh-implement-issue
-issue-creator
 writing-strategy

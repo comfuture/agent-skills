@@ -1,41 +1,33 @@
 {
-  "name": "comfuture-skills",
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "develoop",
   "owner": {
-    "name": "comfuture"
+    "name": "Changkyun Kim",
+    "email": "comfuture@gmail.com"
   },
-  "description": "Portable Agent Skills maintained by comfuture.",
+  "description": "Portable GitHub workflow skills for evidence-backed issue, implementation, and review loops.",
+  "version": "0.1.0",
   "plugins": [
     {
-      "name": "comfuture-agent-skills",
-      "source": "./",
-      "description": "Agent skills for GitHub workflows, review resolution, and writing strategy.",
-      "version": "0.3.1",
+      "name": "develoop",
+      "source": "./plugins/develoop",
+      "description": "Create implementation-ready issues, ship validated pull requests, and resolve automated review without losing scope.",
+      "version": "0.1.0",
       "author": {
-        "name": "comfuture"
+        "name": "Changkyun Kim",
+        "email": "comfuture@gmail.com"
       },
-      "homepage": "https://github.com/comfuture/agent-skills",
+      "homepage": "https://develoop.comfuture.chatgpt.site",
       "repository": "https://github.com/comfuture/agent-skills",
       "license": "MIT AND CC-BY-NC-SA-4.0",
       "keywords": [
-        "agent-skills",
-        "github",
-        "issues",
-        "reviews",
-        "writing",
-        "strategy",
-        "codex",
-        "claude-code"
-      ],
-      "category": "development",
-      "tags": [
         "github",
         "issues",
         "pull-requests",
-        "reviews",
-        "writing",
-        "strategy",
+        "code-review",
         "agent-skills"
-      ]
+      ],
+      "category": "development"
     }
   ]
 }

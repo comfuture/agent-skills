@@ -1,86 +1,81 @@
-# Agent Skills
+# Develoop
 
-Personal Agent Skills for GitHub issue creation, issue-to-PR workflows,
-automated review resolution, and writing strategy.
+Develoop closes the loop on GitHub work with portable Agent Skills for
+evidence-backed issue creation, issue-to-PR implementation, and bounded
+automated-review resolution.
 
-This repository is maintained primarily so I can sync my own agent skills across
-machines. It is public so other people can inspect, adapt, or install the
-skills if they are useful, but it is not a supported product or service.
+The same workflows are packaged for Codex, Claude Code, Antigravity, and the
+open Agent Skills layout. Each host uses its own GitHub integration, shell,
+browser, delegation, and approval capabilities without changing the workflow
+contract.
 
-## Before You Install
+Public information, support, and policies are available at
+[develoop.comfuture.chatgpt.site](https://develoop.comfuture.chatgpt.site).
 
-Review the skills before using them. Agent skills are executable instructions
-for coding agents and may cause file changes, shell commands, network requests,
-GitHub writes, or other state-changing actions depending on the agent and task.
+## Core Skills
 
-Use this repository at your own risk. I do not provide warranty, support
-guarantees, or compensation for damage, data loss, incorrect output, security
-issues, costs, or any other loss caused by using these skills without verifying
-that they are appropriate for your environment.
+- `gh-create-issue`: Research context and create an implementation-ready
+  GitHub issue or reviewed issue draft.
+- `gh-implement-issue`: Implement one GitHub issue through a narrow branch,
+  atomic commits, validation, push, and an accurate pull request.
+- `gh-autoreview-resolve`: Run a bounded automated-review loop, validate
+  findings, resolve in-scope feedback, and prevent review scope creep.
 
-The contents may change at any time. Pin a tag or commit if you need stable
-behavior.
+The repository also includes `writing-strategy`, a separately licensed writing
+structure skill. It remains installable and bundled, but is intentionally not
+part of Develoop's product description, search keywords, or starter prompts.
 
-## Install For Codex
+## Install Develoop
 
-The easiest Codex path is the built-in `$skill-installer` skill. Ask it to
-install the skill folders from this repository:
+### Codex
 
-```text
-$skill-installer Install skills/issue-creator, skills/gh-implement-issue, skills/gh-autoreview-resolve, and skills/writing-strategy from comfuture/agent-skills.
-```
-
-After installation, restart Codex to pick up new skills.
-
-If your Codex surface does not expose `$skill-installer`, use the local helper
-script below or install through `npx skills` / `gh skill` into a supported
-Agent Skills directory.
-
-You can also give `$skill-installer` direct GitHub paths:
-
-```text
-$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/issue-creator
-$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-implement-issue
-$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/gh-autoreview-resolve
-$skill-installer Install https://github.com/comfuture/agent-skills/tree/main/skills/writing-strategy
-```
-
-Codex also supports the open Agent Skills format and can read user-level skills
-from `~/.agents/skills`. For my own local Codex setup, this repository includes
-a helper that syncs the managed skills into `~/.codex/skills`.
+Clone the repository, register its local marketplace, and install the plugin:
 
 ```bash
-git clone git@github.com:comfuture/agent-skills.git ~/Project/agent-skills
-~/Project/agent-skills/scripts/install.sh
+git clone https://github.com/comfuture/agent-skills.git
+codex plugin marketplace add /absolute/path/to/agent-skills
+codex plugin add develoop@develoop
 ```
 
-Install only one managed skill:
+Start a new task after installation. Codex invokes skills as
+`$gh-create-issue`, `$gh-implement-issue`, and
+`$gh-autoreview-resolve`.
+
+### Claude Code
 
 ```bash
-~/Project/agent-skills/scripts/install.sh issue-creator
+claude plugin marketplace add comfuture/agent-skills
+claude plugin install develoop@develoop --scope user
 ```
 
-Preview without writing:
+Reload plugins or start a new session. Claude Code invokes namespaced skills
+such as `/develoop:gh-create-issue`.
+
+For local plugin development:
 
 ```bash
-~/Project/agent-skills/scripts/install.sh --dry-run
+claude --plugin-dir plugins/develoop
 ```
 
-## Install With `npx skills`
+### Antigravity
 
-The cross-agent `skills` CLI can install these skills into many supported agent
-hosts.
+```bash
+agy plugins install https://github.com/comfuture/agent-skills
+agy plugin list
+```
 
-List available skills:
+Antigravity invokes installed skills by their frontmatter names, such as
+`/gh-implement-issue`.
+
+## Install Standalone Skills
+
+The root `skills/` directory preserves the open Agent Skills structure for
+hosts that do not install plugins.
+
+List the available skills:
 
 ```bash
 npx skills add comfuture/agent-skills --list
-```
-
-Install `issue-creator` globally for Claude Code:
-
-```bash
-npx skills add comfuture/agent-skills --skill issue-creator -g -a claude-code -y
 ```
 
 Install every skill for every detected agent:
@@ -89,121 +84,96 @@ Install every skill for every detected agent:
 npx skills add comfuture/agent-skills --skill '*' --agent '*' -y
 ```
 
-During local development:
+Install one skill for a specific host:
 
 ```bash
-npx skills add . --list
+npx skills add comfuture/agent-skills --skill gh-create-issue -g -a claude-code -y
 ```
 
-## Install With GitHub CLI
-
-GitHub CLI v2.90.0+ includes `gh skill`.
+GitHub CLI v2.90.0 or later can also install skills:
 
 ```bash
-gh skill install comfuture/agent-skills issue-creator --agent claude-code --scope user
+gh skill install comfuture/agent-skills gh-create-issue --agent claude-code --scope user
 gh skill install comfuture/agent-skills gh-implement-issue --agent codex --scope user
-gh skill install comfuture/agent-skills gh-autoreview-resolve --agent codex --scope user
-gh skill install comfuture/agent-skills writing-strategy --agent codex --scope user
+gh skill install comfuture/agent-skills gh-autoreview-resolve --agent universal --scope user
 ```
 
-Install every skill:
+For a user-level Codex mirror, the repository helper copies only the
+allowlisted skills from `managed-skills.txt`:
 
 ```bash
-gh skill install comfuture/agent-skills --all --agent universal --scope user
+scripts/install.sh
+scripts/install.sh gh-create-issue
+scripts/install.sh --dry-run
 ```
 
-Pin a version when repeatability matters:
+## Safety
+
+Review the skills before installing them. They may read local repositories and
+GitHub state or, when the user authorizes it, create issues, branches, commits,
+pull requests, review replies, thread resolutions, and merges.
+
+Develoop does not operate a backend or receive GitHub credentials. Your agent
+host, GitHub integration, GitHub CLI, and model provider process data under
+their own policies. Use least-privilege credentials, protect unrelated work,
+review diffs and remote writes, and remove secrets or private data from public
+issues and comments.
+
+This repository is personally maintained and provided without support
+guarantees or warranty. Pin a tag or commit when repeatability matters.
+
+## Package Layout
+
+- `skills/`: canonical standalone Agent Skills.
+- `plugins/develoop/`: self-contained Codex, Claude Code, and Antigravity
+  plugin payload.
+- `.agents/plugins/marketplace.json`: Codex repository marketplace.
+- `.claude-plugin/marketplace.json`: Claude Code repository marketplace.
+- `scripts/sync_develoop_plugin.py`: exact standalone-to-plugin sync and parity
+  check.
+- `website/`: public product, support, privacy, terms, and release pages.
+
+When a canonical standalone skill changes, refresh and verify the plugin copy:
 
 ```bash
-gh skill install comfuture/agent-skills issue-creator --pin <tag-or-commit>
+python3 scripts/sync_develoop_plugin.py --write
+python3 scripts/sync_develoop_plugin.py --check
 ```
 
-## Install In Claude Code As A Plugin
-
-Claude Code plugins are namespaced, so installed skills are invoked as
-`/comfuture-agent-skills:issue-creator` and
-`/comfuture-agent-skills:gh-implement-issue`,
-`/comfuture-agent-skills:gh-autoreview-resolve`, or
-`/comfuture-agent-skills:writing-strategy`.
-
-Add this repository as a plugin marketplace:
-
-```text
-/plugin marketplace add comfuture/agent-skills
-```
-
-Install the plugin:
-
-```text
-/plugin install comfuture-agent-skills@comfuture-skills
-```
-
-For local plugin development:
+If you edit a managed skill under `~/.codex/skills`, export it back before
+refreshing the plugin:
 
 ```bash
-claude --plugin-dir .
+scripts/export-from-codex.sh gh-create-issue
+python3 scripts/sync_develoop_plugin.py --write
 ```
 
-Then run `/reload-plugins` inside Claude Code after edits.
-
-## Install In Gemini CLI
-
-Gemini CLI discovers skills from `~/.gemini/skills/`, `~/.agents/skills/`, and
-workspace-level `.gemini/skills/` or `.agents/skills/`.
+## Validation
 
 ```bash
-gemini skills install https://github.com/comfuture/agent-skills.git --consent
-```
-
-## Included Skills
-
-- `issue-creator`: Research context and draft or create implementation-ready
-  GitHub issues.
-- `gh-implement-issue`: Implement a GitHub issue through a validated
-  branch-to-PR workflow.
-- `gh-autoreview-resolve`: Run a bounded automated-review loop for a pull
-  request, resolve validated in-scope feedback, and optionally merge.
-- `writing-strategy`: Choose a narrative strategy from a curated bilingual
-  strategy set and produce a Markdown outline or table of contents.
-
-These are personally maintained skills. This repository intentionally excludes
-copies of skills already provided by Codex, Claude Code, OpenAI-curated plugins,
-or other agent runtimes.
-
-## Updating Local Edits
-
-If you edit a skill locally under `~/.codex/skills`, export it back to this
-repository before committing:
-
-```bash
-~/Project/agent-skills/scripts/export-from-codex.sh issue-creator
-git -C ~/Project/agent-skills diff -- skills/issue-creator
-```
-
-The helper script allowlist is `managed-skills.txt`. `--delete` is applied only
-inside each managed skill directory, never against all of `~/.codex`.
-
-## Maintenance Checks
-
-Before committing a new or edited skill:
-
-```bash
-git grep -nE '(/Users/|gho_|sk-|BEGIN .*PRIVATE KEY|auth.json)' -- . ':!README.md' ':!scripts/*' ':!.gitignore'
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests
+PYTHONDONTWRITEBYTECODE=1 python3 skills/gh-autoreview-resolve/scripts/inspect_review_state.py --self-test
+python3 scripts/sync_develoop_plugin.py --check
 npx skills add . --list
 gh skill publish --dry-run
-claude plugin validate --strict .
+claude plugin validate plugins/develoop --strict
+claude plugin validate . --strict
+agy plugin validate plugins/develoop
 ```
 
-When adding new skills, keep the folder name, `name` frontmatter, and
-`managed-skills.txt` entry in sync.
+Codex plugin validation uses the validator bundled with `plugin-creator` and
+requires PyYAML:
 
-When publishing a Claude Code plugin update, bump the `version` in both
-`.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
+```bash
+uv run --with PyYAML python \
+  /path/to/plugin-creator/scripts/validate_plugin.py \
+  plugins/develoop
+```
 
 ## License
 
-Repository code, scripts, and supporting metadata are licensed under MIT unless
-otherwise stated. See `LICENSE`.
+Repository code, scripts, supporting metadata, and the three GitHub workflow
+skills are licensed under MIT unless otherwise stated. See `LICENSE`.
 
 The `writing-strategy` skill content is licensed separately under
 CC-BY-NC-SA-4.0. See `skills/writing-strategy/LICENSE.md`.

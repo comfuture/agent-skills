@@ -1,0 +1,5 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "develoop",
+  "description": "Create implementation-ready GitHub issues, ship validated pull requests, and resolve automated review without losing scope."
+}
