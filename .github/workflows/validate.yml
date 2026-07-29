@@ -1,0 +1,27 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate self-contained plugin package
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python -m unittest discover -s tests
+      - name: Validate bundled review-state classifier
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: >-
+          python
+          plugins/develoop/skills/gh-autoreview-resolve/scripts/inspect_review_state.py
+          --self-test

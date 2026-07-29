@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "develoop",
+  "displayName": "Develoop",
+  "version": "0.1.0",
+  "description": "Create implementation-ready GitHub issues, ship validated pull requests, and resolve automated review without losing scope.",
+  "author": {
+    "name": "Changkyun Kim",
+    "email": "comfuture@gmail.com"
+  },
+  "homepage": "https://develoop.comfuture.chatgpt.site",
+  "repository": "https://github.com/comfuture/agent-skills",
+  "license": "MIT AND CC-BY-NC-SA-4.0",
+  "keywords": [
+    "github",
+    "issues",
+    "pull-requests",
+    "code-review",
+    "agent-skills"
+  ],
+  "skills": "./skills/"
+}

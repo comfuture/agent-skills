@@ -1,0 +1,20 @@
+{
+  "name": "develoop",
+  "interface": {
+    "displayName": "Develoop"
+  },
+  "plugins": [
+    {
+      "name": "develoop",
+      "source": {
+        "source": "local",
+        "path": "./plugins/develoop"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

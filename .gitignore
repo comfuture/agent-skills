@@ -5,6 +5,9 @@
 *.pyc
 __pycache__/
 .agents/
+!.agents/
+!.agents/plugins/
+!.agents/plugins/marketplace.json
 skills-lock.json
 
 # Keep this repository as an allowlisted skill/config source, not a raw
@@ -20,4 +23,7 @@ ambient-suggestions/
 memories/
 memories_extensions/
 plugins/
+!plugins/
+!plugins/develoop/
+!plugins/develoop/**
 .tmp/

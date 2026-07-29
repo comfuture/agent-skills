@@ -1,0 +1,4 @@
+interface:
+  display_name: "Writing Strategy"
+  short_description: "Choose narrative strategies for writing"
+  default_prompt: "Use $writing-strategy to choose a narrative strategy and outline my draft."
