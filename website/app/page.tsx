@@ -23,11 +23,10 @@ const workflow = [
 
 const installs = [
   {
-    host: "Codex",
-    note: "Repository marketplace",
-    command: `git clone https://github.com/comfuture/agent-skills.git
-codex plugin marketplace add /absolute/path/to/agent-skills
-codex plugin add develoop@develoop`,
+    host: "OpenAI / Codex",
+    note: "OpenAI Curated Directory",
+    command: "Sign in, open the Develoop listing, and select Add.",
+    href: "https://chatgpt.com/plugins/plugins_6a69ee33e3048191ab7da89ec70dbbe2",
   },
   {
     host: "Claude Code",
@@ -154,6 +153,11 @@ export default function Home() {
                 <pre>
                   <code>{install.command}</code>
                 </pre>
+                {install.href ? (
+                  <a className="directory-action" href={install.href}>
+                    Open in Plugins Directory <span aria-hidden="true">↗</span>
+                  </a>
+                ) : null}
               </article>
             ))}
           </div>

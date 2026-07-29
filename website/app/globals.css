@@ -483,6 +483,21 @@ pre code {
   font-size: 0.74rem;
 }
 
+.directory-action {
+  color: var(--lime);
+  display: inline-block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  margin-top: 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.directory-action:hover,
+.directory-action:focus-visible {
+  color: var(--mint);
+}
+
 .bundle-note {
   color: var(--muted);
   font-size: 0.78rem;

@@ -27,15 +27,12 @@ part of Develoop's product description, search keywords, or starter prompts.
 
 ## Install Develoop
 
-### Codex
+### OpenAI / Codex
 
-Clone the repository, register its local marketplace, and install the plugin:
+Install Develoop from the OpenAI Curated Directory:
 
-```bash
-git clone https://github.com/comfuture/agent-skills.git
-codex plugin marketplace add /absolute/path/to/agent-skills
-codex plugin add develoop@develoop
-```
+[Open Develoop in the OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6a69ee33e3048191ab7da89ec70dbbe2)
+and select **Add** after signing in.
 
 Start a new task after installation. Codex invokes skills as
 `$gh-create-issue`, `$gh-implement-issue`, and
