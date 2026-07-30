@@ -1,14 +1,16 @@
+import Link from "next/link";
+
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <a className="wordmark" href="/" aria-label="Develoop home">
+      <Link className="wordmark" href="/" aria-label="Develoop home">
         <span>deve</span>
         <strong>loop</strong>
-      </a>
+      </Link>
       <nav aria-label="Primary navigation">
-        <a href="/#skills">Skills</a>
-        <a href="/#install">Install</a>
-        <a href="/support">Support</a>
+        <Link href="/#skills">Skills</Link>
+        <Link href="/#install">Install</Link>
+        <Link href="/support">Support</Link>
         <a href="https://github.com/comfuture/agent-skills">
           GitHub <span aria-hidden="true">↗</span>
         </a>
@@ -21,17 +23,17 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div>
-        <a className="wordmark footer-wordmark" href="/">
+        <Link className="wordmark footer-wordmark" href="/">
           <span>deve</span>
           <strong>loop</strong>
-        </a>
+        </Link>
         <p>Development is a loop. Keep the evidence in it.</p>
       </div>
       <nav aria-label="Policy navigation">
-        <a href="/support">Support</a>
-        <a href="/releases">Releases</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
+        <Link href="/support">Support</Link>
+        <Link href="/releases">Releases</Link>
+        <Link href="/privacy">Privacy</Link>
+        <Link href="/terms">Terms</Link>
       </nav>
       <p className="copyright">Created by Changkyun Kim · © 2026</p>
     </footer>
