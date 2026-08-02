@@ -480,6 +480,19 @@ class InspectReviewStateTests(unittest.TestCase):
         self.assertEqual(runner.graphql_calls, [])
         self.assertIn("network unavailable", session.telemetry()["preflight"]["error"])
 
+    def test_preflight_missing_remaining_fails_closed_without_graphql(self) -> None:
+        runner = QueueRunner([json.dumps({
+            "resources": {"graphql": {"limit": 5_000, "used": 1}}
+        })])
+        session = INSPECTOR.GraphQLSession(INSPECTOR.InspectionConfig(), runner)
+
+        with self.assertRaises(INSPECTOR.InspectionStop) as caught:
+            session.graphql("Test", "query Test { viewer { login } }", {})
+
+        self.assertEqual(caught.exception.outcome, "preflight_unavailable")
+        self.assertEqual(runner.graphql_calls, [])
+        self.assertIn("omitted", session.telemetry()["preflight"]["error"])
+
     def test_reserve_preflight_blocks_graphql_and_reports_reset(self) -> None:
         runner = QueueRunner([preflight(remaining=200, used=4_800)])
         session = INSPECTOR.GraphQLSession(
@@ -925,6 +938,22 @@ class InspectReviewStateTests(unittest.TestCase):
             self.assertEqual(stale.path.stat().st_ino, inode)
             metadata = json.loads(stale.path.read_text(encoding="utf-8"))
             self.assertEqual(metadata["pid"], INSPECTOR.os.getpid())
+
+    @unittest.skipUnless(hasattr(INSPECTOR.os, "O_NOFOLLOW"), "requires O_NOFOLLOW")
+    def test_observer_lock_refuses_symlink_without_touching_target(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / "target.txt"
+            target.write_text("must stay intact", encoding="utf-8")
+            lock_path = root / "develoop-owner_repo-7.lock"
+            lock_path.symlink_to(target)
+            lock = INSPECTOR.ObserverLock("owner/repo", 7, root)
+
+            with self.assertRaises(INSPECTOR.InspectionStop) as caught:
+                lock.acquire()
+
+            self.assertEqual(caught.exception.outcome, "observer_unavailable")
+            self.assertEqual(target.read_text(encoding="utf-8"), "must stay intact")
 
     def test_timing_parser_rejects_non_finite_values(self) -> None:
         for value in ("nan", "inf", "-inf"):
