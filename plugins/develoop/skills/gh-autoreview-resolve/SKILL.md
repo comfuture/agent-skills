@@ -21,7 +21,8 @@ unless the repository actually uses that reviewer.
 1. Read repository instructions, the linked issue, PR body, changed files, current head, checks, and existing review threads.
 2. Record the original goal, acceptance criteria, explicit non-goals, requested review focus, whether merge is authorized, and the user's preferred merge strategy.
 3. Verify `gh auth status`, the repository, PR number, local checkout, and unrelated working-tree changes before mutations.
-4. Run `scripts/inspect_review_state.py <PR> --repo OWNER/REPO` for a normalized baseline. Treat its GraphQL `reviewThreads` result as the source of truth for unresolved work.
+4. Run `scripts/inspect_review_state.py <PR> --repo OWNER/REPO` for one normalized, fully paginated baseline. Treat its GraphQL `reviewThreads` result as the source of truth for unresolved work. The inspector first reads `gh api rate_limit`, preserves 200 GraphQL points plus a five-point next-query buffer by default, and reports every query's `cost`, `remaining`, `used`, and `reset_at` values.
+5. Use only one active observer for an `OWNER/REPO#PR`. When waiting is required, give the loop to one `--watch` process and let other agents or tasks reuse its result instead of polling independently. The watcher enforces this on the same host with a process lock; operators must preserve the same single-observer contract across hosts.
 
 Do not merge unless the user explicitly requested it. If merge was requested but the strategy is neither stated nor reliably discoverable, ask rather than guess.
 
@@ -44,7 +45,9 @@ Avoid leading the reviewer toward a predetermined implementation or inviting a r
 
 ## Wait and classify
 
-Poll about every 15–30 seconds and keep the user informed during longer waits. Use the inspection script on every meaningful transition.
+Use `inspect_review_state.py <PR> --repo OWNER/REPO --watch --after <ISO_TIME>` for a bounded wait. It takes one authoritative snapshot, then uses a lightweight transition fingerprint instead of repeatedly loading every thread and check. An unchanged fingerprint backs off from 60 to 120 to 240 seconds and then caps at 300 seconds, with jitter. A transition resets the backoff and triggers another fully paginated snapshot; even without a detected transition, the watcher forces an authoritative refresh every 10 minutes. Defaults cap a watcher at 20 minutes, 40 GraphQL requests, 20 pages per connection, and 90 seconds of actual GraphQL execution. Each `gh` request receives the remaining execution/deadline timeout. Adjust a ceiling only for a concrete PR-size or latency reason.
+
+Do not run a separate shell polling loop around the inspector. Keep the user informed during longer waits while the one watcher owns observation.
 
 - `eyes > 0`: review is still running; keep waiting.
 - `thumbs_up > 0`: no-issue pass tied to the current head, unless unresolved threads still exist.
@@ -53,9 +56,13 @@ Poll about every 15–30 seconds and keep the user informed during longer waits.
 - `outcome: review_feedback`: inspect every unresolved thread.
 - `outcome: review_response`: inspect the response and thread state; do not assume pass or failure.
 - `outcome: not_started_or_pending`: allow short propagation time, then diagnose configuration or request state without posting duplicates.
-- `outcome: pagination_incomplete` or `pagination_incomplete: true`: fetch the remaining pages before declaring completion.
+- `outcome: pagination_incomplete` or `pagination_incomplete: true`: stop. The inspector already followed cursors until an explicit ceiling or a missing/repeated cursor prevented progress. Read `pagination.unfinished`, raise a justified ceiling if safe, and resume only after checking the reported cursor and quota.
+- `outcome: rate_limited`: this is an operational pause, not review failure. The inspector reads included response headers, so honor `retry_after_seconds` for secondary limits or wait until the reported `reset_at`; do not immediately retry.
+- `outcome: budget_exhausted`: stop the observer and inspect its request, page, or execution-time ceiling before deciding whether one bounded rerun is justified.
+- `observer.outcome: watch_timeout`: the review is still non-terminal. Report the current state and decide whether another bounded observation window is warranted.
+- `observer.outcome: observer_active`: reuse the existing observer. Do not start another watcher for the same PR.
 
-Check that the review applies to the current head. A stale or outdated anchor is evidence to reassess, not a reason to edit blindly.
+Check that the review applies to the current head. A stale or outdated anchor is evidence to reassess, not a reason to edit blindly. Never report `passed`, ready, or zero unresolved threads unless `pagination.complete` is `true`.
 
 ## Resolve feedback
 
@@ -96,6 +103,8 @@ When stopping:
 
 Before declaring the loop complete, verify the exact final head, required checks, no active eyes request, and zero unresolved review threads. A pass response is sufficient; do not manufacture extra review rounds merely to obtain a different reaction shape.
 
+Also verify `pagination.complete: true` and `rate_limit.status: ok`. Partial data may contain useful feedback, but it is never terminal success.
+
 If merge was requested:
 
 1. Reconfirm the PR is ready, mergeable, current checks are green, and no in-scope blocker remains.
@@ -112,6 +121,10 @@ Run from this skill directory:
 ```bash
 python scripts/inspect_review_state.py 123 --repo owner/repository
 python scripts/inspect_review_state.py https://github.com/owner/repository/pull/123 --after 2026-07-23T00:00:00Z
+python scripts/inspect_review_state.py 123 --repo owner/repository --watch --after 2026-07-23T00:00:00Z
+gh api rate_limit --jq '.resources.graphql'
 ```
 
-Use `--self-test` to validate the script's state classifier without GitHub access.
+The inspector fetches top-level comments without nested reactions, identifies the latest active anchored review request, and then fetches reactions only for that comment. It follows cursors for PR reactions, comments, reviews, threads, active-request reactions, check contexts, and nested thread comments. Missing or non-advancing cursors fail closed with the exact unfinished connection.
+
+Use `--self-test` to validate the script's state classifier without GitHub access. Use `--reserve`, `--query-cost-buffer`, `--max-requests`, `--max-pages`, `--max-seconds`, or the watch timing flags only when the defaults do not fit a verified repository constraint.
