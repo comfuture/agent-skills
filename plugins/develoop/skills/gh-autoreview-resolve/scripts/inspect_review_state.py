@@ -10,9 +10,9 @@ import os
 import random
 import re
 import shutil
+import stat
 import subprocess
 import sys
-import tempfile
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -149,6 +149,10 @@ class GraphQLSession:
             }
             if graphql.get("remaining") is None:
                 self.preflight["error"] = "REST rate-limit response omitted GraphQL remaining quota"
+                self._stop(
+                    "preflight_unavailable",
+                    "REST GraphQL-quota preflight omitted the remaining value",
+                )
             elif int(graphql["remaining"]) < (
                 self.config.reserve + self.config.query_cost_buffer
             ):
@@ -1485,15 +1489,61 @@ def backoff_seconds(
     return max(1.0, min(maximum, base * factor))
 
 
+def secure_observer_lock_directory(directory: Path | None = None) -> Path:
+    if directory is None:
+        runtime_directory = os.environ.get("XDG_RUNTIME_DIR")
+        root = (
+            Path(runtime_directory) / "develoop-observer-locks"
+            if runtime_directory
+            else Path.home() / ".develoop-observer-locks"
+        )
+    else:
+        root = directory
+    try:
+        root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        metadata = root.lstat()
+    except OSError as error:
+        raise GhError(f"could not prepare observer lock directory {root}: {error}") from error
+    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+        raise GhError(f"observer lock directory must be a real directory: {root}")
+    if hasattr(os, "getuid") and metadata.st_uid != os.getuid():
+        raise GhError(f"observer lock directory is not owned by the current user: {root}")
+    try:
+        root.chmod(0o700)
+    except OSError as error:
+        raise GhError(f"could not secure observer lock directory {root}: {error}") from error
+    return root
+
+
 class ObserverLock:
     def __init__(self, repository: str, number: int, directory: Path | None = None) -> None:
         safe_repo = re.sub(r"[^A-Za-z0-9_.-]", "_", repository)
-        self.path = (directory or Path(tempfile.gettempdir())) / f"develoop-{safe_repo}-{number}.lock"
+        self.path = secure_observer_lock_directory(directory) / f"develoop-{safe_repo}-{number}.lock"
         self.owned = False
         self.descriptor: int | None = None
 
     def acquire(self) -> None:
-        descriptor = os.open(self.path, os.O_RDWR | os.O_CREAT, 0o600)
+        flags = os.O_RDWR | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0)
+        try:
+            descriptor = os.open(self.path, flags, 0o600)
+        except OSError as error:
+            raise InspectionStop(
+                "observer_unavailable",
+                f"observer lock path is unsafe or unavailable: {self.path}: {error}",
+            ) from error
+        metadata = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(metadata.st_mode)
+            or metadata.st_nlink != 1
+            or (hasattr(os, "getuid") and metadata.st_uid != os.getuid())
+        ):
+            os.close(descriptor)
+            raise InspectionStop(
+                "observer_unavailable",
+                f"observer lock must be a single-link regular file owned by the current user: {self.path}",
+            )
+        if hasattr(os, "fchmod"):
+            os.fchmod(descriptor, 0o600)
         try:
             if fcntl is not None:
                 fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)

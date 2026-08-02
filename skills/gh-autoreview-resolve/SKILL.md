@@ -22,7 +22,7 @@ unless the repository actually uses that reviewer.
 2. Record the original goal, acceptance criteria, explicit non-goals, requested review focus, whether merge is authorized, and the user's preferred merge strategy.
 3. Verify `gh auth status`, the repository, PR number, local checkout, and unrelated working-tree changes before mutations.
 4. Run `scripts/inspect_review_state.py <PR> --repo OWNER/REPO` for one normalized, fully paginated baseline. Treat its GraphQL `reviewThreads` result as the source of truth for unresolved work. The inspector first reads `gh api rate_limit`, preserves 200 GraphQL points plus a five-point next-query buffer by default, and reports every query's `cost`, `remaining`, `used`, and `reset_at` values.
-5. Use only one active observer for an `OWNER/REPO#PR`. When waiting is required, give the loop to one `--watch` process and let other agents or tasks reuse its result instead of polling independently. The watcher enforces this on the same host with an advisory process lock that is released automatically on process exit; operators must preserve the same single-observer contract across hosts.
+5. Use only one active observer for an `OWNER/REPO#PR`. When waiting is required, give the loop to one `--watch` process and let other agents or tasks reuse its result instead of polling independently. The watcher enforces this on the same host with an advisory process lock in a user-private directory; it refuses symlinks or non-regular lock files and releases ownership automatically on process exit. Operators must preserve the same single-observer contract across hosts.
 
 Do not merge unless the user explicitly requested it. If merge was requested but the strategy is neither stated nor reliably discoverable, ask rather than guess.
 
