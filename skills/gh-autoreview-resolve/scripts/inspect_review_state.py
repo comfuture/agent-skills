@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import random
 import re
@@ -18,6 +19,16 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - exercised on Windows hosts
+    fcntl = None
+
+try:
+    import msvcrt
+except ImportError:  # pragma: no cover - exercised on POSIX hosts
+    msvcrt = None
 
 
 PR_URL_RE = re.compile(r"^https://github\.com/([^/]+/[^/]+)/pull/(\d+)(?:/.*)?$")
@@ -47,6 +58,8 @@ TERMINAL_OUTCOMES = {
     "pagination_incomplete",
     "rate_limited",
     "budget_exhausted",
+    "preflight_unavailable",
+    "observer_unavailable",
 }
 REQUIRED_CONNECTIONS = (
     "comments",
@@ -150,8 +163,8 @@ class GraphQLSession:
         except GhTimeout as error:
             self._stop("budget_exhausted", str(error))
         except (GhError, TypeError, ValueError) as error:
-            if isinstance(error, GhError) and is_rate_limit_error(str(error)):
-                detail = str(error)
+            detail = str(error)
+            if isinstance(error, GhError) and is_rate_limit_error(detail):
                 kind = "secondary" if is_secondary_rate_limit(detail) else "primary"
                 self._stop(
                     "rate_limited",
@@ -165,8 +178,12 @@ class GraphQLSession:
                 "used": None,
                 "reset_at": None,
                 "source": "rest_rate_limit",
-                "error": str(error),
+                "error": detail,
             }
+            self._stop(
+                "preflight_unavailable",
+                f"REST GraphQL-quota preflight failed closed: {detail}",
+            )
 
     def _stop(
         self,
@@ -844,6 +861,42 @@ def page_variables(
     return {**base_variables(repository, number), "pageSize": page_size, "cursor": cursor}
 
 
+def collect_check_snapshot(
+    session: GraphQLSession,
+    repository: str,
+    number: int,
+    expected_head_oid: str | None,
+    connection: str,
+) -> tuple[list[dict[str, Any]], int | None, str | None, str | None]:
+    metadata: dict[str, str | None] = {"head_oid": None, "rollup_state": None}
+
+    def fetch_page(cursor: str | None) -> dict[str, Any]:
+        check_data = session.graphql(
+            "Checks",
+            CHECKS_QUERY,
+            page_variables(repository, number, session.config.page_size, cursor),
+            connection=connection,
+            cursor=cursor,
+        )
+        check_pr = ((check_data.get("repository") or {}).get("pullRequest") or {})
+        if check_pr.get("headRefOid") != expected_head_oid:
+            session._stop(
+                "pagination_incomplete",
+                "pull request head changed while check contexts were being collected",
+                connection=connection,
+                cursor=cursor,
+            )
+        commits = (check_pr.get("commits") or {}).get("nodes") or [{}]
+        commit = commits[-1].get("commit") or {}
+        rollup = commit.get("statusCheckRollup") or {}
+        metadata["head_oid"] = commit.get("oid")
+        metadata["rollup_state"] = rollup.get("state")
+        return rollup.get("contexts") or {}
+
+    contexts, total = collect_pages(session, connection, fetch_page)
+    return contexts, total, metadata["head_oid"], metadata["rollup_state"]
+
+
 def latest_marker(items: list[dict[str, Any]], *fields: str) -> dict[str, Any] | None:
     if not items:
         return None
@@ -1047,34 +1100,17 @@ def inspect(
             totals["request_reactions"] = 0
             session.page_counts["request_reactions"] = 0
 
-        def fetch_check_contexts(cursor: str | None) -> dict[str, Any]:
-            nonlocal checks_head_oid, checks_rollup_state
-            check_data = session.graphql(
-                "Checks",
-                CHECKS_QUERY,
-                page_variables(repository, number, session.config.page_size, cursor),
-                connection="check_contexts",
-                cursor=cursor,
-            )
-            check_pr = ((check_data.get("repository") or {}).get("pullRequest") or {})
-            if check_pr.get("headRefOid") != pr.get("headRefOid"):
-                session._stop(
-                    "pagination_incomplete",
-                    "pull request head changed while check contexts were being collected",
-                    connection="check_contexts",
-                    cursor=cursor,
-                )
-            commits = (check_pr.get("commits") or {}).get("nodes") or [{}]
-            commit = commits[-1].get("commit") or {}
-            rollup = commit.get("statusCheckRollup") or {}
-            checks_head_oid = commit.get("oid")
-            checks_rollup_state = rollup.get("state")
-            return rollup.get("contexts") or {}
-
-        contexts, totals["check_contexts"] = collect_pages(
+        (
+            contexts,
+            totals["check_contexts"],
+            checks_head_oid,
+            checks_rollup_state,
+        ) = collect_check_snapshot(
             session,
+            repository,
+            number,
+            pr.get("headRefOid"),
             "check_contexts",
-            fetch_check_contexts,
         )
 
         for thread in threads:
@@ -1110,6 +1146,30 @@ def inspect(
                 initial_cursor=str(cursor),
             )
             thread["_all_comments"].extend(more_comments)
+
+        (
+            verified_contexts,
+            verified_total,
+            verified_head_oid,
+            verified_rollup_state,
+        ) = collect_check_snapshot(
+            session,
+            repository,
+            number,
+            pr.get("headRefOid"),
+            "check_contexts_verify",
+        )
+        if (
+            verified_contexts != contexts
+            or verified_total != totals.get("check_contexts")
+            or verified_head_oid != checks_head_oid
+            or verified_rollup_state != checks_rollup_state
+        ):
+            session._stop(
+                "pagination_incomplete",
+                "check contexts changed during the paginated snapshot; rerun after they stabilize",
+                connection="check_contexts_verify",
+            )
 
         expected_fingerprint = fingerprint_json({
             "head_oid": pr.get("headRefOid"),
@@ -1430,50 +1490,53 @@ class ObserverLock:
         safe_repo = re.sub(r"[^A-Za-z0-9_.-]", "_", repository)
         self.path = (directory or Path(tempfile.gettempdir())) / f"develoop-{safe_repo}-{number}.lock"
         self.owned = False
+        self.descriptor: int | None = None
 
     def acquire(self) -> None:
-        for attempt in range(2):
-            try:
-                descriptor = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-            except FileExistsError:
-                if attempt == 0 and self._remove_stale():
-                    continue
-                owner = self.path.read_text(encoding="utf-8", errors="replace").strip()
+        descriptor = os.open(self.path, os.O_RDWR | os.O_CREAT, 0o600)
+        try:
+            if fcntl is not None:
+                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            elif msvcrt is not None:  # pragma: no cover - Windows-only path
+                if os.fstat(descriptor).st_size == 0:
+                    os.write(descriptor, b"\0")
+                os.lseek(descriptor, 0, os.SEEK_SET)
+                msvcrt.locking(descriptor, msvcrt.LK_NBLCK, 1)
+            else:  # pragma: no cover - Python always exposes one on supported hosts
+                os.close(descriptor)
                 raise InspectionStop(
-                    "observer_active",
-                    f"another observer owns {self.path}: {owner or 'owner unknown'}",
+                    "observer_unavailable",
+                    "this host does not provide an advisory file-lock implementation",
                 )
-            else:
-                with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-                    handle.write(json.dumps({"pid": os.getpid(), "started_at": utc_now()}))
-                self.owned = True
-                return
-
-    def _remove_stale(self) -> bool:
-        try:
-            payload = json.loads(self.path.read_text(encoding="utf-8"))
-            pid = int(payload["pid"])
-        except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
-            return False
-        try:
-            os.kill(pid, 0)
-        except ProcessLookupError:
+        except (BlockingIOError, OSError):
             try:
-                self.path.unlink()
-            except FileNotFoundError:
-                pass
-            return True
-        except PermissionError:
-            return False
-        return False
+                os.lseek(descriptor, 0, os.SEEK_SET)
+                owner = os.read(descriptor, 4_096).decode("utf-8", errors="replace").strip("\0\n ")
+            finally:
+                os.close(descriptor)
+            raise InspectionStop(
+                "observer_active",
+                f"another observer owns {self.path}: {owner or 'owner unknown'}",
+            )
+
+        payload = json.dumps({"pid": os.getpid(), "started_at": utc_now()}).encode("utf-8")
+        os.ftruncate(descriptor, 0)
+        os.lseek(descriptor, 0, os.SEEK_SET)
+        os.write(descriptor, payload)
+        os.fsync(descriptor)
+        self.descriptor = descriptor
+        self.owned = True
 
     def release(self) -> None:
-        if not self.owned:
+        if not self.owned or self.descriptor is None:
             return
-        try:
-            self.path.unlink()
-        except FileNotFoundError:
-            pass
+        if fcntl is not None:
+            fcntl.flock(self.descriptor, fcntl.LOCK_UN)
+        elif msvcrt is not None:  # pragma: no cover - Windows-only path
+            os.lseek(self.descriptor, 0, os.SEEK_SET)
+            msvcrt.locking(self.descriptor, msvcrt.LK_UNLCK, 1)
+        os.close(self.descriptor)
+        self.descriptor = None
         self.owned = False
 
     def __enter__(self) -> ObserverLock:
@@ -1707,8 +1770,8 @@ def non_negative_int(value: str) -> int:
 
 def positive_float(value: str) -> float:
     parsed = float(value)
-    if parsed <= 0:
-        raise argparse.ArgumentTypeError("must be greater than 0")
+    if not math.isfinite(parsed) or parsed <= 0:
+        raise argparse.ArgumentTypeError("must be finite and greater than 0")
     return parsed
 
 

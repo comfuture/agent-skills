@@ -22,7 +22,7 @@ unless the repository actually uses that reviewer.
 2. Record the original goal, acceptance criteria, explicit non-goals, requested review focus, whether merge is authorized, and the user's preferred merge strategy.
 3. Verify `gh auth status`, the repository, PR number, local checkout, and unrelated working-tree changes before mutations.
 4. Run `scripts/inspect_review_state.py <PR> --repo OWNER/REPO` for one normalized, fully paginated baseline. Treat its GraphQL `reviewThreads` result as the source of truth for unresolved work. The inspector first reads `gh api rate_limit`, preserves 200 GraphQL points plus a five-point next-query buffer by default, and reports every query's `cost`, `remaining`, `used`, and `reset_at` values.
-5. Use only one active observer for an `OWNER/REPO#PR`. When waiting is required, give the loop to one `--watch` process and let other agents or tasks reuse its result instead of polling independently. The watcher enforces this on the same host with a process lock; operators must preserve the same single-observer contract across hosts.
+5. Use only one active observer for an `OWNER/REPO#PR`. When waiting is required, give the loop to one `--watch` process and let other agents or tasks reuse its result instead of polling independently. The watcher enforces this on the same host with an advisory process lock that is released automatically on process exit; operators must preserve the same single-observer contract across hosts.
 
 Do not merge unless the user explicitly requested it. If merge was requested but the strategy is neither stated nor reliably discoverable, ask rather than guess.
 
@@ -58,6 +58,7 @@ Do not run a separate shell polling loop around the inspector. Keep the user inf
 - `outcome: not_started_or_pending`: allow short propagation time, then diagnose configuration or request state without posting duplicates.
 - `outcome: pagination_incomplete` or `pagination_incomplete: true`: stop. The inspector already followed cursors until an explicit ceiling or a missing/repeated cursor prevented progress. Read `pagination.unfinished`, raise a justified ceiling if safe, and resume only after checking the reported cursor and quota.
 - `outcome: rate_limited`: this is an operational pause, not review failure. The inspector reads included response headers, so honor `retry_after_seconds` for secondary limits or wait until the reported `reset_at`; do not immediately retry.
+- `outcome: preflight_unavailable`: the inspector could not establish the GraphQL budget and failed closed before issuing a GraphQL query. Restore `gh api rate_limit` access before retrying.
 - `outcome: budget_exhausted`: stop the observer and inspect its request, page, or execution-time ceiling before deciding whether one bounded rerun is justified.
 - `observer.outcome: watch_timeout`: the review is still non-terminal. Report the current state and decide whether another bounded observation window is warranted.
 - `observer.outcome: observer_active`: reuse the existing observer. Do not start another watcher for the same PR.
@@ -125,6 +126,6 @@ python scripts/inspect_review_state.py 123 --repo owner/repository --watch --aft
 gh api rate_limit --jq '.resources.graphql'
 ```
 
-The inspector fetches top-level comments without nested reactions, identifies the latest active anchored review request, and then fetches reactions only for that comment. It follows cursors for PR reactions, comments, reviews, threads, active-request reactions, check contexts, and nested thread comments. Missing or non-advancing cursors fail closed with the exact unfinished connection.
+The inspector fetches top-level comments without nested reactions, identifies the latest active anchored review request, and then fetches reactions only for that comment. It follows cursors for PR reactions, comments, reviews, threads, active-request reactions, check contexts, and nested thread comments. It collects every check context twice and requires the two snapshots to match so a change outside the lightweight last-20 suffix cannot produce false completion. Missing or non-advancing cursors fail closed with the exact unfinished connection.
 
 Use `--self-test` to validate the script's state classifier without GitHub access. Use `--reserve`, `--query-cost-buffer`, `--max-requests`, `--max-pages`, `--max-seconds`, or the watch timing flags only when the defaults do not fit a verified repository constraint.

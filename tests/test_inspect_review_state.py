@@ -422,7 +422,64 @@ class FinalReserveCrossingRunner(EmptyInspectionRunner):
         return response
 
 
+class ChangingOldCheckRunner(EmptyInspectionRunner):
+    def __init__(self) -> None:
+        super().__init__()
+        self.check_calls = 0
+        self.initial_contexts = [
+            {
+                "__typename": "CheckRun",
+                "name": f"check-{index}",
+                "status": "IN_PROGRESS",
+                "conclusion": None,
+                "detailsUrl": f"https://github.com/owner/repo/runs/{index}",
+            }
+            for index in range(21)
+        ]
+
+    def __call__(self, arguments: list[str], timeout: float | None = None) -> str:
+        response = super().__call__(arguments, timeout)
+        query_values = [value for value in arguments if value.startswith("query=")]
+        if not query_values:
+            return response
+        payload = json.loads(response)
+        if "query Checks" in query_values[0]:
+            self.check_calls += 1
+            contexts = [dict(item) for item in self.initial_contexts]
+            if self.check_calls == 2:
+                contexts[0].update({"status": "COMPLETED", "conclusion": "SUCCESS"})
+            rollup = payload["data"]["repository"]["pullRequest"]["commits"]["nodes"][0]["commit"]["statusCheckRollup"]
+            rollup["state"] = "PENDING"
+            rollup["contexts"] = page(
+                contexts,
+                has_next=False,
+                cursor=None,
+                total=21,
+            )
+            return json.dumps(payload)
+        if "query Transition" in query_values[0]:
+            rollup = payload["data"]["repository"]["pullRequest"]["commits"]["nodes"][0]["commit"]["statusCheckRollup"]
+            rollup["state"] = "PENDING"
+            rollup["contexts"] = {
+                "totalCount": 21,
+                "nodes": self.initial_contexts[-20:],
+            }
+            return json.dumps(payload)
+        return response
+
+
 class InspectReviewStateTests(unittest.TestCase):
+    def test_unavailable_preflight_fails_closed_without_graphql(self) -> None:
+        runner = QueueRunner([INSPECTOR.GhError("network unavailable")])
+        session = INSPECTOR.GraphQLSession(INSPECTOR.InspectionConfig(), runner)
+
+        with self.assertRaises(INSPECTOR.InspectionStop) as caught:
+            session.graphql("Test", "query Test { viewer { login } }", {})
+
+        self.assertEqual(caught.exception.outcome, "preflight_unavailable")
+        self.assertEqual(runner.graphql_calls, [])
+        self.assertIn("network unavailable", session.telemetry()["preflight"]["error"])
+
     def test_reserve_preflight_blocks_graphql_and_reports_reset(self) -> None:
         runner = QueueRunner([preflight(remaining=200, used=4_800)])
         session = INSPECTOR.GraphQLSession(
@@ -673,7 +730,10 @@ class InspectReviewStateTests(unittest.TestCase):
             ),
             stderr="gh: HTTP 403",
         )
-        with mock.patch.object(INSPECTOR.subprocess, "run", return_value=completed):
+        with (
+            mock.patch.object(INSPECTOR.shutil, "which", return_value="/usr/bin/gh"),
+            mock.patch.object(INSPECTOR.subprocess, "run", return_value=completed),
+        ):
             with self.assertRaises(INSPECTOR.GhError) as caught:
                 INSPECTOR.run_gh(["api", "graphql", "--include"], timeout=10)
 
@@ -682,7 +742,10 @@ class InspectReviewStateTests(unittest.TestCase):
 
     def test_production_runner_turns_subprocess_timeout_into_gh_timeout(self) -> None:
         expired = subprocess.TimeoutExpired(cmd=["gh", "api", "graphql"], timeout=1)
-        with mock.patch.object(INSPECTOR.subprocess, "run", side_effect=expired):
+        with (
+            mock.patch.object(INSPECTOR.shutil, "which", return_value="/usr/bin/gh"),
+            mock.patch.object(INSPECTOR.subprocess, "run", side_effect=expired),
+        ):
             with self.assertRaises(INSPECTOR.GhTimeout):
                 INSPECTOR.run_gh(["api", "graphql", "--include"], timeout=1)
 
@@ -747,7 +810,7 @@ class InspectReviewStateTests(unittest.TestCase):
         self.assertTrue(result["pagination"]["complete"])
         self.assertTrue(result["trigger"]["reaction_head_anchored"])
         self.assertEqual(result["trigger"]["reactions"]["thumbs_up"], 1)
-        self.assertEqual(result["rate_limit"]["graphql"]["total_cost"], 8)
+        self.assertEqual(result["rate_limit"]["graphql"]["total_cost"], 9)
         self.assertNotIn("reactions", INSPECTOR.COMMENTS_QUERY.casefold())
         self.assertIn("node(id:$requestId)", INSPECTOR.REQUEST_REACTIONS_QUERY)
 
@@ -786,6 +849,23 @@ class InspectReviewStateTests(unittest.TestCase):
         self.assertFalse(result["inspection"]["complete"])
         self.assertEqual(result["review"]["outcome"], "rate_limited")
         self.assertIsNone(result["review"]["unresolved_count"])
+
+    def test_check_change_outside_last_twenty_fails_snapshot_closed(self) -> None:
+        result = INSPECTOR.inspect(
+            "owner/repo",
+            7,
+            None,
+            4_000,
+            runner=ChangingOldCheckRunner(),
+        )
+
+        self.assertEqual(result["inspection"]["outcome"], "pagination_incomplete")
+        self.assertFalse(result["inspection"]["complete"])
+        self.assertIsNone(result["review"]["unresolved_count"])
+        self.assertEqual(
+            result["pagination"]["unfinished"][0]["connection"],
+            "check_contexts_verify",
+        )
 
     def test_partial_data_cannot_report_success_or_zero_unresolved(self) -> None:
         runner = EmptyInspectionRunner()
@@ -828,6 +908,29 @@ class InspectReviewStateTests(unittest.TestCase):
 
             duplicate.acquire()
             duplicate.release()
+
+    def test_advisory_lock_reuses_stale_metadata_without_unlinking(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            stale = INSPECTOR.ObserverLock("owner/repo", 7, root)
+            stale.path.write_text(
+                json.dumps({"pid": 999_999_999, "started_at": "2020-01-01T00:00:00Z"}),
+                encoding="utf-8",
+            )
+            inode = stale.path.stat().st_ino
+
+            stale.acquire()
+            stale.release()
+
+            self.assertEqual(stale.path.stat().st_ino, inode)
+            metadata = json.loads(stale.path.read_text(encoding="utf-8"))
+            self.assertEqual(metadata["pid"], INSPECTOR.os.getpid())
+
+    def test_timing_parser_rejects_non_finite_values(self) -> None:
+        for value in ("nan", "inf", "-inf"):
+            with self.subTest(value=value):
+                with self.assertRaises(INSPECTOR.argparse.ArgumentTypeError):
+                    INSPECTOR.positive_float(value)
 
     def test_unchanged_watch_uses_lightweight_probe_without_full_resnapshot(self) -> None:
         runner = EmptyInspectionRunner(reaction_content="EYES")
@@ -878,7 +981,7 @@ class InspectReviewStateTests(unittest.TestCase):
         self.assertEqual(result["observer"]["probes"], 1)
         self.assertEqual(sum("query Base" in query for query in queries), 1)
         self.assertEqual(sum("query Threads" in query for query in queries), 1)
-        self.assertEqual(sum("query Checks" in query for query in queries), 1)
+        self.assertEqual(sum("query Checks" in query for query in queries), 2)
         self.assertEqual(sum("query Transition" in query for query in queries), 2)
 
     def test_unchanged_watch_forces_periodic_authoritative_snapshot(self) -> None:
@@ -929,7 +1032,7 @@ class InspectReviewStateTests(unittest.TestCase):
         self.assertEqual(result["observer"]["outcome"], "watch_timeout")
         self.assertEqual(sum("query Base" in query for query in queries), 2)
         self.assertEqual(sum("query Threads" in query for query in queries), 2)
-        self.assertEqual(sum("query Checks" in query for query in queries), 2)
+        self.assertEqual(sum("query Checks" in query for query in queries), 4)
         self.assertEqual(sum("query Transition" in query for query in queries), 3)
 
 
