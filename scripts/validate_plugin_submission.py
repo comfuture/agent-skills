@@ -38,7 +38,7 @@ def main() -> None:
 
     require(isinstance(interface, dict), "plugin interface must be an object")
     require(manifest["name"] == "develoop", "plugin name mismatch")
-    require(manifest["version"] == "0.1.0", "submission version mismatch")
+    require(manifest["version"] == "0.1.1", "submission version mismatch")
     require(
         manifest["license"] == "MIT AND CC-BY-NC-SA-4.0",
         "mixed-license declaration mismatch",

@@ -41,10 +41,10 @@ class DeveloopPluginPackageTests(unittest.TestCase):
         self.assertEqual(claude["name"], "develoop")
         self.assertEqual(marketplace["plugins"][0]["name"], "develoop")
         self.assertEqual(antigravity["name"], "develoop")
-        self.assertEqual(codex["version"], "0.1.0")
-        self.assertEqual(claude["version"], "0.1.0")
-        self.assertEqual(marketplace["version"], "0.1.0")
-        self.assertEqual(marketplace["plugins"][0]["version"], "0.1.0")
+        self.assertEqual(codex["version"], "0.1.1")
+        self.assertEqual(claude["version"], "0.1.1")
+        self.assertEqual(marketplace["version"], "0.1.1")
+        self.assertEqual(marketplace["plugins"][0]["version"], "0.1.1")
         self.assertEqual(
             set(antigravity),
             {"$schema", "name", "description"},

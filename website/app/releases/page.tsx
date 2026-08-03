@@ -10,6 +10,31 @@ export default function ReleasesPage() {
       title="Release Notes"
       subtitle="Public Develoop release history"
     >
+      <p className="release-tag">Quota-safe automated review</p>
+      <h2>Develoop 0.1.1</h2>
+      <p>
+        This patch makes automated review inspection observable, adaptive, and
+        complete even when GitHub GraphQL quota or pagination is constrained.
+      </p>
+      <ul>
+        <li>
+          Reports per-query GraphQL cost, remaining quota, usage, and reset
+          guidance while preserving a configurable reserve.
+        </li>
+        <li>
+          Follows every review-classification cursor, including nested thread
+          comments and complete check-context verification.
+        </li>
+        <li>
+          Replaces fixed full-snapshot polling with adaptive backoff, periodic
+          authoritative refreshes, and single-observer coordination.
+        </li>
+        <li>
+          Fails closed on missing quota evidence, repeated cursors, partial
+          data, unsafe observer locks, and execution-budget exhaustion.
+        </li>
+      </ul>
+      <hr />
       <p className="release-tag">Initial multi-agent release</p>
       <h2>Develoop 0.1.0</h2>
       <p>
