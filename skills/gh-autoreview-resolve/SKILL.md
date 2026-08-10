@@ -29,7 +29,7 @@ Do not merge unless the user explicitly requested it. If merge was requested but
 ## Start review
 
 1. If the PR is a draft, run `gh pr ready <PR> --repo OWNER/REPO`. Do nothing if it is already ready.
-2. Record the UTC time immediately before the ready transition and inspect with `--after <ISO_TIME>` so old bot activity is not mistaken for the new review.
+2. Record the UTC time and full head OID immediately before the ready transition. Inspect with `--after <ISO_TIME>` so old bot activity is not mistaken for the new review, and retain the OID so the ready-triggered review can be tied to unchanged code even though GitHub does not attach a `Review head:` marker to that implicit request.
 3. Confirm review start from an `eyes` reaction on the PR or the active `@codex review...` comment. If feedback or a pass response arrives before eyes is sampled, accept that as a completed start race.
 4. If no start signal appears after a reasonable bounded wait, confirm there is no active request, then post exactly one `@codex review` comment. Include the current full head OID on its own `Review head:` line so a later reaction can be tied to that exact code. Never post another request while eyes is present.
 5. When the user supplied a review target, request it narrowly and keep the head marker:
@@ -51,7 +51,7 @@ Do not run a separate shell polling loop around the inspector. Keep the user inf
 
 - `eyes > 0`: review is still running; keep waiting.
 - `thumbs_up > 0`: no-issue pass tied to the current head, unless unresolved threads still exist.
-- `ignored_thumbs_up > 0`: a thumbs-up was observed without a matching `Review head:` anchor. Do not treat it as a pass; if the bounded explicit request has not been used, request review once with the current full head OID.
+- `ignored_thumbs_up > 0`: a thumbs-up was observed without a matching explicit `Review head:` anchor. This is not automatically invalid. Accept it as the initial ready-triggered pass when the connector reaction occurred after the recorded ready time, the head recorded before ready still equals the current head, pagination is complete, and no unresolved thread exists. Otherwise do not treat it as a current-head pass. Absence of the marker alone does not require another `@codex review` comment; request an anchored review only when current-head applicability remains materially uncertain or a focused re-review is independently warranted.
 - `outcome: passed`: accept either thumbs-up or an explicit connector response such as “Didn't find any major issues,” provided the response applies to the current head.
 - `outcome: review_feedback`: inspect every unresolved thread.
 - `outcome: review_response`: inspect the response and thread state; do not assume pass or failure.
@@ -83,13 +83,21 @@ Do not silently resolve a substantive thread and do not equate reviewer priority
 
 ## Bound the loop
 
-Use one initial review and at most one explicit focused re-review by default. Request that re-review only when the fix changed a sensitive reviewed boundary, evidence leaves a concrete in-scope doubt, or the user explicitly asked for another pass.
+Use one initial review and, after in-scope fixes, normally one explicit focused verification re-review. When those fixes stay within the original development scope and that pass leaves no concrete regression concern, finish the loop.
 
-Do not automatically start a third explicit review round. Stop or split follow-up when any of these occurs:
+Do not treat that focused re-review as an absolute one-round cap. If a valid finding's fix changes a sensitive boundary or creates or leaves a concrete in-scope regression risk, request further focused re-review as needed. Before every additional round, require all of the following:
+
+- the preceding review produced a valid in-scope finding and a corresponding code change, or new evidence identifies a specific regression risk in that change;
+- the request names the exact current head and only the affected contract, regression, or risk;
+- the work remains within the PR's original goal and does not broaden the implementation scope;
+- no other review request is active.
+
+Do not request another round merely to obtain stronger reassurance or a different reaction. After each response, reassess the evidence and stop as soon as no concrete regression concern remains. Stop or split follow-up when any of these occurs:
 
 - new comments move beyond the PR's original goal;
 - the concern is pre-existing and non-blocking for this PR;
 - fixes begin spreading into unrelated modules or architectural redesign;
+- the next request cannot identify a new code change or a concrete regression hypothesis caused by the preceding fix;
 - the reviewer repeats an already answered behavior without new evidence;
 - the acceptance criteria and required regression coverage are already satisfied.
 
