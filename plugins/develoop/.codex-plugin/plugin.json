@@ -1,6 +1,6 @@
 {
   "name": "develoop",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Create implementation-ready GitHub issues, ship validated pull requests, simplify implicit state machines, and resolve automated review without losing scope.",
   "author": {
     "name": "Changkyun Kim",
