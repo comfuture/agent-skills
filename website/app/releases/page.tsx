@@ -10,6 +10,35 @@ export default function ReleasesPage() {
       title="Release Notes"
       subtitle="Public Develoop release history"
     >
+      <p className="release-tag">Head-aware bounded re-review</p>
+      <h2>Develoop 0.1.2</h2>
+      <p>
+        This patch ties ready-triggered review passes to unchanged code and
+        allows additional focused re-review only for concrete regression risk.
+      </p>
+      <ul>
+        <li>
+          Records the ready-transition time and full head OID before an implicit
+          automated review starts.
+        </li>
+        <li>
+          Accepts an unanchored ready-triggered thumbs-up only when its timing,
+          unchanged head, complete pagination, and thread state prove that it
+          applies to the current code.
+        </li>
+        <li>
+          Avoids redundant review requests made solely to add a missing{" "}
+          <code>Review head:</code> marker.
+        </li>
+        <li>
+          Permits another focused re-review only when the preceding in-scope
+          fix creates or exposes a concrete regression risk.
+        </li>
+        <li>
+          Stops duplicate, reassurance-only, and scope-expanding review loops.
+        </li>
+      </ul>
+      <hr />
       <p className="release-tag">Quota-safe automated review</p>
       <h2>Develoop 0.1.1</h2>
       <p>

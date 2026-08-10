@@ -1,26 +1,29 @@
-# Develoop 0.1.1 — Quota-safe Automated Review
+# Develoop 0.1.2 — Head-aware Bounded Re-review
 
-Develoop 0.1.1 makes the bounded automated-review workflow observable,
-pagination-complete, and safe under constrained shared GitHub GraphQL quota.
+Develoop 0.1.2 makes ready-triggered review passes and follow-up re-review
+decisions explicit, current-head-aware, and causally bounded.
 
 Highlights:
 
-- Reports per-query GraphQL cost, remaining quota, usage, and reset guidance.
-- Fails closed when quota preflight is unavailable or the configured reserve
-  cannot be preserved.
-- Follows cursors for all review-classification connections, including nested
-  review-thread comments and complete check-context verification.
-- Replaces fixed full-snapshot polling with adaptive backoff, periodic
-  authoritative refreshes, and single-observer coordination.
-- Preserves current-head anchoring, unresolved-thread precedence, bounded
-  re-review, and duplicate-request prevention.
-- Adds deterministic coverage for pagination, rate limits, time and request
-  ceilings, response headers, observer locks, and partial-data failure modes.
+- Records both the ready-transition time and full head OID so implicit review
+  reactions can be tied to unchanged code.
+- Accepts a ready-triggered unanchored thumbs-up only when it is post-ready,
+  the pre-ready and current heads match, pagination is complete, and no review
+  thread remains unresolved.
+- Avoids redundant explicit review requests made solely to add a missing
+  `Review head:` marker.
+- Keeps one focused verification re-review as the normal path while allowing
+  another only for a concrete in-scope regression risk caused or exposed by
+  the preceding fix.
+- Requires every additional re-review to name the exact current head and
+  affected contract, stay within the original scope, and wait for any active
+  review request to finish.
+- Stops reassurance-only, duplicate, and scope-expanding review loops.
 
 Reviewer notes:
 
 - Submission type: Skills only
-- Version: 0.1.1
+- Version: 0.1.2
 - Publisher: Changkyun Kim
 - Category: Developer Tools
 - Support: https://develoop.comfuture.chatgpt.site/support
