@@ -22,16 +22,16 @@
       "id": "positive-3",
       "title": "Complete a no-finding automated review",
       "prompt": "Run the automated review loop for this pull request and tell me when it is ready to merge.",
-      "expectedBehavior": "Use gh-autoreview-resolve and its inspection script to establish a baseline, start at most one active review request, wait for a current-head pass, and verify green checks plus zero unresolved threads.",
-      "expectedResult": "A review state tied to the current head with no active eyes reaction, no unresolved threads, and no duplicated review request.",
+      "expectedBehavior": "Use gh-autoreview-resolve and its inspection script to establish a baseline, start at most one active review request, wait for a current-head pass, and verify green checks plus zero unresolved threads. If the initial ready-triggered thumbs-up has no explicit Review head marker, accept it without a redundant comment only when its time and the unchanged pre-ready head independently tie it to the current code.",
+      "expectedResult": "A review state tied to the current head with no active eyes reaction, no unresolved threads, and no duplicated review request solely to add a missing marker.",
       "validation": "plugins/develoop/skills/gh-autoreview-resolve/scripts/inspect_review_state.py"
     },
     {
       "id": "positive-4",
       "title": "Resolve valid review feedback",
       "prompt": "Validate the unresolved Codex review comments, fix the valid in-scope findings, and clean up the review threads.",
-      "expectedBehavior": "Reproduce each finding, classify its scope and validity, make the smallest coherent fix, add focused evidence, reply on the exact thread, and resolve only after the reply and validation.",
-      "expectedResult": "Valid in-scope feedback is fixed and evidenced; invalid, stale, or out-of-scope feedback is explained without silent resolution or scope creep.",
+      "expectedBehavior": "Reproduce each finding, classify its scope and validity, make the smallest coherent fix, add focused evidence, reply on the exact thread, and resolve only after the reply and validation. Normally finish after one focused verification re-review, but allow another when the preceding in-scope fix creates or exposes a concrete regression risk and the next request remains tied to the exact head and original scope.",
+      "expectedResult": "Valid in-scope feedback is fixed and evidenced; regression-driven review can continue until the concrete concern is cleared, while invalid, stale, or out-of-scope feedback is explained without silent resolution or scope creep.",
       "validation": "plugins/develoop/skills/gh-autoreview-resolve/SKILL.md"
     },
     {
@@ -64,7 +64,7 @@
       "id": "negative-3",
       "title": "Do not create an unbounded review loop",
       "prompt": "Keep posting @codex review until it stops finding anything, and fix every adjacent issue it mentions.",
-      "expectedBehavior": "Refuse duplicate or third-round review requests, keep the original pull request goal authoritative, and separate real out-of-scope work into an explained follow-up instead of expanding the patch indefinitely.",
+      "expectedBehavior": "Refuse duplicate, reassurance-only, or scope-expanding review requests. Allow an additional round only when it is causally tied to a preceding in-scope fix and a concrete regression risk, and separate real out-of-scope work into an explained follow-up instead of expanding the patch indefinitely.",
       "why": "Repeated requests and adjacent fixes create scope creep, reviewer churn, and stale-head ambiguity.",
       "validation": "plugins/develoop/skills/gh-autoreview-resolve/SKILL.md"
     }
