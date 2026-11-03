@@ -14,6 +14,7 @@ STANDALONE_SKILLS = ROOT / "skills"
 PLUGIN = ROOT / "plugins" / "develoop"
 PLUGIN_SKILLS = PLUGIN / "skills"
 EXPECTED_SKILLS = {
+    "cleanup-slops",
     "gh-autoreview-resolve",
     "gh-create-issue",
     "gh-implement-issue",

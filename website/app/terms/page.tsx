@@ -12,7 +12,7 @@ export default function TermsPage() {
     >
       <p>
         Develoop is open-source software, not a hosted development service.
-        Repository code, scripts, metadata, and the three GitHub workflow skills
+        Repository code, scripts, metadata, and the four development workflow skills
         are provided under the MIT License. The bundled{" "}
         <code>writing-strategy</code> content is separately provided under
         CC-BY-NC-SA-4.0.

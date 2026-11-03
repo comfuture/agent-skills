@@ -3,7 +3,7 @@
   "name": "develoop",
   "displayName": "Develoop",
   "version": "0.1.1",
-  "description": "Create implementation-ready GitHub issues, ship validated pull requests, and resolve automated review without losing scope.",
+  "description": "Create implementation-ready GitHub issues, ship validated pull requests, simplify implicit state machines, and resolve automated review without losing scope.",
   "author": {
     "name": "Changkyun Kim",
     "email": "comfuture@gmail.com"
@@ -16,6 +16,8 @@
     "issues",
     "pull-requests",
     "code-review",
+    "refactoring",
+    "state-machines",
     "agent-skills"
   ],
   "skills": "./skills/"

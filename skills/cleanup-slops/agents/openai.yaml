@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cleanup Slops"
+  short_description: "Simplify implicit state without regressions"
+  default_prompt: "Use $cleanup-slops to find all of the implicit state machines in my app and simplify unnecessary state without changing behavior."

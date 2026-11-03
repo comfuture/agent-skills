@@ -1,7 +1,7 @@
 {
   "name": "develoop",
   "version": "0.1.1",
-  "description": "Create implementation-ready GitHub issues, ship validated pull requests, and resolve automated review without losing scope.",
+  "description": "Create implementation-ready GitHub issues, ship validated pull requests, simplify implicit state machines, and resolve automated review without losing scope.",
   "author": {
     "name": "Changkyun Kim",
     "email": "comfuture@gmail.com",
@@ -15,13 +15,15 @@
     "issues",
     "pull-requests",
     "code-review",
+    "refactoring",
+    "state-machines",
     "agent-skills"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Develoop",
-    "shortDescription": "Ship GitHub work end to end",
-    "longDescription": "Move GitHub work through an evidence-backed loop: frame an implementation-ready issue, carry it through a narrow branch and validated pull request, then resolve automated review without scope creep.",
+    "shortDescription": "Ship maintainable GitHub work",
+    "longDescription": "Move GitHub work through an evidence-backed loop: frame an implementation-ready issue, carry it through a narrow branch and validated pull request, simplify implicit state machines without changing behavior, then resolve automated review without scope creep.",
     "developerName": "Changkyun Kim",
     "category": "Developer Tools",
     "capabilities": [
@@ -34,6 +36,7 @@
     "defaultPrompt": [
       "Research this repository and create an implementation-ready GitHub issue.",
       "Implement this GitHub issue through a validated draft pull request.",
+      "find all of the implicit state machines in my app",
       "Run a bounded automated-review loop for this pull request."
     ],
     "brandColor": "#C8FF4F",

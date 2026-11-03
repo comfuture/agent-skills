@@ -36,11 +36,11 @@
     },
     {
       "id": "positive-5",
-      "title": "Run the workflow on another agent host",
-      "prompt": "Use these GitHub delivery skills in Claude Code even if its connected tools differ from Codex.",
-      "expectedBehavior": "Read the agent-harness guide and map GitHub reads, writes, shell commands, browser work, waits, and user interaction to equivalent capabilities exposed by the current host.",
-      "expectedResult": "The evidence, safety, and verification contract remains intact without assuming Codex-only tool names.",
-      "validation": "plugins/develoop/skills/gh-implement-issue/references/agent-harnesses.md"
+      "title": "Clean up implicit state machines across agent hosts",
+      "prompt": "find all of the implicit state machines in my app",
+      "expectedBehavior": "Use cleanup-slops with the current host's repository and validation tools to inventory hidden state transitions, trace producers and consumers, establish baseline behavior, and simplify redundant state when cleanup is authorized. Preserve independent state axes, request ownership, public contracts, and essential lifecycle transitions. When a PR is specified, inspect its base-to-head implementation and relevant dependencies without expanding into unrelated cleanup.",
+      "expectedResult": "An evidence-backed inventory and, when requested, validated cleanup with explicit coverage, preserved or deferred candidates, and regression evidence, without assuming Codex-only tool names or claiming exhaustive coverage from keyword searches.",
+      "validation": "plugins/develoop/skills/cleanup-slops/SKILL.md"
     }
   ],
   "negative": [
