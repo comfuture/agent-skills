@@ -28,8 +28,8 @@ Do not merge unless the user explicitly requested it. If merge was requested but
 
 ## Start review
 
-1. If the PR is a draft, run `gh pr ready <PR> --repo OWNER/REPO`. Do nothing if it is already ready.
-2. Record the UTC time and full head OID immediately before the ready transition. Inspect with `--after <ISO_TIME>` so old bot activity is not mistaken for the new review, and retain the OID so the ready-triggered review can be tied to unchanged code even though GitHub does not attach a `Review head:` marker to that implicit request.
+1. If the PR is a draft, record the UTC time and full head OID immediately before the ready transition. Retain the OID so the ready-triggered review can be tied to unchanged code even though GitHub does not attach a `Review head:` marker to that implicit request.
+2. Then run `gh pr ready <PR> --repo OWNER/REPO` and inspect with `--after <ISO_TIME>` using the recorded transition time so old bot activity is not mistaken for the new review. If the PR is already ready, do not repeat the transition; reuse its recorded trigger evidence when available, and never substitute a later observation time for the ready time.
 3. Confirm review start from an `eyes` reaction on the PR or the active `@codex review...` comment. If feedback or a pass response arrives before eyes is sampled, accept that as a completed start race.
 4. If no start signal appears after a reasonable bounded wait, confirm there is no active request, then post exactly one `@codex review` comment. Include the current full head OID on its own `Review head:` line so a later reaction can be tied to that exact code. Never post another request while eyes is present.
 5. When the user supplied a review target, request it narrowly and keep the head marker:
