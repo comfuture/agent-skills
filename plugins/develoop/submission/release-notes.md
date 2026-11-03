@@ -1,32 +1,31 @@
-# Develoop 0.1.2 — Head-aware Bounded Re-review
+# Develoop 0.1.3 — Behavior-preserving State Cleanup
 
-Develoop 0.1.2 makes ready-triggered review passes and follow-up re-review
-decisions explicit, current-head-aware, and causally bounded.
+Develoop 0.1.3 adds `cleanup-slops`, a cleanup workflow for implicit state
+machines across an entire repository or a specified pull request.
 
 Highlights:
 
-- Records both the ready-transition time and full head OID so implicit review
-  reactions can be tied to unchanged code.
-- Accepts a ready-triggered unanchored thumbs-up only when it is post-ready,
-  the pre-ready and current heads match, pagination is complete, and no review
-  thread remains unresolved.
-- Avoids redundant explicit review requests made solely to add a missing
-  `Review head:` marker.
-- Keeps one focused verification re-review as the normal path while allowing
-  another only for a concrete in-scope regression risk caused or exposed by
-  the preceding fix.
-- Requires every additional re-review to name the exact current head and
-  affected contract, stay within the original scope, and wait for any active
-  review request to finish.
-- Stops reassurance-only, duplicate, and scope-expanding review loops.
+- Starts from “find all of the implicit state machines in my app” and traces
+  state ownership, reachable combinations, transitions, consumers, and invariants.
+- Removes redundant sources of truth while preserving independent state axes,
+  async request ownership, public APIs, and persisted representations.
+- Establishes baseline behavior and focused regression evidence before editing,
+  with decision examples for essential and unnecessary state.
+- Keeps PR cleanup within the implementation and its relevant dependencies,
+  reporting preserved or deferred candidates and uninspected areas.
+- Preserves category, capabilities, public support links, starter prompts, and
+  release notes in the OpenAI submission ZIP.
+- Records the UTC time and full head before marking a draft ready, and reuses
+  existing trigger evidence when a PR is already ready.
+- Retains the head-aware, causally bounded automated-review guidance from 0.1.2.
 
 Reviewer notes:
 
 - Submission type: Skills only
-- Version: 0.1.2
+- Version: 0.1.3
 - Publisher: Changkyun Kim
 - Category: Developer Tools
 - Support: https://develoop.comfuture.chatgpt.site/support
-- Test coverage: five positive and three negative reviewer scenarios, plus 36
-  repository regression tests
+- Validation: 36 repository regression tests, seven website route tests, and
+  independent repository-wide and PR-scoped cleanup exercises
 - License: MIT AND CC-BY-NC-SA-4.0

@@ -45,6 +45,13 @@ OPENAI_INTERFACE_FIELDS = (
     "shortDescription",
     "longDescription",
     "developerName",
+    "category",
+    "capabilities",
+    "websiteURL",
+    "supportURL",
+    "privacyPolicyURL",
+    "termsOfServiceURL",
+    "defaultPrompt",
     "composerIcon",
     "logo",
 )
@@ -105,6 +112,20 @@ def openai_submission_manifest() -> dict[str, object]:
         "interface": {
             field: interface[field]
             for field in OPENAI_INTERFACE_FIELDS
+        },
+        "extensions": {
+            **manifest.get("extensions", {}),
+            "com.openai": {
+                **manifest.get("extensions", {}).get("com.openai", {}),
+                "publication": {
+                    **manifest.get("extensions", {})
+                    .get("com.openai", {})
+                    .get("publication", {}),
+                    "release_notes": (PLUGIN / "submission" / "release-notes.md")
+                    .read_text(encoding="utf-8")
+                    .strip(),
+                },
+            },
         },
     }
 
