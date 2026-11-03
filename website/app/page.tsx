@@ -15,6 +15,12 @@ const workflow = [
   },
   {
     index: "03",
+    skill: "cleanup-slops",
+    title: "Simplify the state",
+    body: "Find implicit state machines across a repository or pull request, remove redundant state, and verify that existing behavior still holds.",
+  },
+  {
+    index: "04",
     skill: "gh-autoreview-resolve",
     title: "Resolve the review",
     body: "Run a bounded automated-review loop, validate every finding, prevent scope creep, and verify the final head.",
@@ -64,7 +70,7 @@ export default function Home() {
             <p className="hero-lede">
               Develoop gives Codex, Claude Code, Antigravity, and standalone
               agents one evidence-first path from a well-framed issue to a
-              validated pull request and a resolved review.
+              validated pull request, simpler state, and a resolved review.
             </p>
             <div className="hero-actions">
               <a className="primary-action" href="#install">
@@ -98,7 +104,7 @@ export default function Home() {
         <section className="workflow-section" id="skills">
           <div className="section-heading">
             <p className="eyebrow">One deliberate loop</p>
-            <h2>Three skills. Clear handoffs.</h2>
+            <h2>Four skills. Clear handoffs.</h2>
             <p>
               Each skill can run independently. Together they preserve context
               across the places where GitHub work most often loses it.

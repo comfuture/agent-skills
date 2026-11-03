@@ -7,6 +7,8 @@ Antigravity, and Agent Skills-compatible hosts.
 
 - `gh-create-issue`: research and create an implementation-ready issue.
 - `gh-implement-issue`: carry one issue through a validated pull request.
+- `cleanup-slops`: find implicit state machines across a repository or PR and
+  simplify redundant state without changing behavior.
 - `gh-autoreview-resolve`: run a bounded automated-review and resolution loop.
 - `writing-strategy`: separately licensed writing structure guidance included
   for bundle compatibility, but not part of Develoop's product positioning.
@@ -23,7 +25,11 @@ codex plugin add develoop@develoop
 ```
 
 Start a new task after installation. Invoke skills as `$gh-create-issue`,
-`$gh-implement-issue`, and `$gh-autoreview-resolve`.
+`$gh-implement-issue`, `$cleanup-slops`, and `$gh-autoreview-resolve`.
+
+Start with `Use $cleanup-slops to find all of the implicit state machines in my
+app.` Supply a PR number or URL to limit cleanup to that implementation and its
+relevant dependencies.
 
 ### Claude Code
 
@@ -47,7 +53,7 @@ Invoke installed skills by their frontmatter names, such as
 
 ### Standalone Agent Skills
 
-The repository root keeps the same four skills in the open Agent Skills layout:
+The repository root keeps the same five skills in the open Agent Skills layout:
 
 ```bash
 npx skills add comfuture/agent-skills --skill '*' --agent '*' -y
@@ -62,5 +68,5 @@ npx skills add comfuture/agent-skills --skill '*' --agent '*' -y
 - Releases: https://develoop.comfuture.chatgpt.site/releases
 - Source: https://github.com/comfuture/agent-skills
 
-Repository code and the GitHub workflow skills are licensed under MIT.
+Repository code and the development workflow skills are licensed under MIT.
 `writing-strategy` is licensed separately under CC-BY-NC-SA-4.0.

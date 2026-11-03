@@ -1,8 +1,8 @@
 # Develoop
 
 Develoop closes the loop on GitHub work with portable Agent Skills for
-evidence-backed issue creation, issue-to-PR implementation, and bounded
-automated-review resolution.
+evidence-backed issue creation, issue-to-PR implementation, behavior-preserving
+state cleanup, and bounded automated-review resolution.
 
 The same workflows are packaged for Codex, Claude Code, Antigravity, and the
 open Agent Skills layout. Each host uses its own GitHub integration, shell,
@@ -18,6 +18,8 @@ Public information, support, and policies are available at
   GitHub issue or reviewed issue draft.
 - `gh-implement-issue`: Implement one GitHub issue through a narrow branch,
   atomic commits, validation, push, and an accurate pull request.
+- `cleanup-slops`: Find implicit state machines across a repository or PR and
+  simplify redundant state while preserving behavior and essential transitions.
 - `gh-autoreview-resolve`: Run a bounded automated-review loop, validate
   findings, resolve in-scope feedback, and prevent review scope creep.
 
@@ -41,8 +43,17 @@ Or install it from the OpenAI Curated Directory:
 and select **Add** after signing in.
 
 Start a new task after installation. Codex invokes skills as
-`$gh-create-issue`, `$gh-implement-issue`, and
+`$gh-create-issue`, `$gh-implement-issue`, `$cleanup-slops`, and
 `$gh-autoreview-resolve`.
+
+Start a cleanup pass with:
+
+```text
+Use $cleanup-slops to find all of the implicit state machines in my app.
+```
+
+For a PR, specify its number or URL to keep cleanup within the implementation
+and its relevant dependencies.
 
 ### Claude Code
 
@@ -179,7 +190,7 @@ uv run --with PyYAML python \
 
 ## License
 
-Repository code, scripts, supporting metadata, and the three GitHub workflow
+Repository code, scripts, supporting metadata, and the four development workflow
 skills are licensed under MIT unless otherwise stated. See `LICENSE`.
 
 The `writing-strategy` skill content is licensed separately under

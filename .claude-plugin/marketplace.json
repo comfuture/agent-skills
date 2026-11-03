@@ -5,13 +5,13 @@
     "name": "Changkyun Kim",
     "email": "comfuture@gmail.com"
   },
-  "description": "Portable GitHub workflow skills for evidence-backed issue, implementation, and review loops.",
+  "description": "Portable GitHub workflow skills for evidence-backed issue, implementation, state cleanup, and review loops.",
   "version": "0.1.1",
   "plugins": [
     {
       "name": "develoop",
       "source": "./plugins/develoop",
-      "description": "Create implementation-ready issues, ship validated pull requests, and resolve automated review without losing scope.",
+      "description": "Create implementation-ready issues, ship validated pull requests, simplify implicit state machines, and resolve automated review without losing scope.",
       "version": "0.1.1",
       "author": {
         "name": "Changkyun Kim",
@@ -25,6 +25,8 @@
         "issues",
         "pull-requests",
         "code-review",
+        "refactoring",
+        "state-machines",
         "agent-skills"
       ],
       "category": "development"
