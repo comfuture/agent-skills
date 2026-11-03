@@ -10,6 +10,31 @@ export default function ReleasesPage() {
       title="Release Notes"
       subtitle="Public Develoop release history"
     >
+      <p className="release-tag">Behavior-preserving state cleanup</p>
+      <h2>Develoop 0.1.3</h2>
+      <p>
+        Adds a cleanup step for implicit state machines across a repository or
+        pull request, with regression evidence and clear implementation scope.
+      </p>
+      <ul>
+        <li>
+          Adds <code>cleanup-slops</code> to remove redundant state while
+          preserving essential transitions, async ownership, and public contracts.
+        </li>
+        <li>
+          Includes decision examples and validation for repository-wide and
+          PR-scoped cleanup.
+        </li>
+        <li>
+          Preserves category, capabilities, support links, starter prompts, and
+          release notes in the OpenAI submission package.
+        </li>
+        <li>
+          Clarifies that review evidence must be recorded before marking a draft
+          ready, without repeating an existing ready transition.
+        </li>
+      </ul>
+      <hr />
       <p className="release-tag">Head-aware bounded re-review</p>
       <h2>Develoop 0.1.2</h2>
       <p>

@@ -21,6 +21,13 @@ OPENAI_INTERFACE_FIELDS = {
     "shortDescription",
     "longDescription",
     "developerName",
+    "category",
+    "capabilities",
+    "websiteURL",
+    "supportURL",
+    "privacyPolicyURL",
+    "termsOfServiceURL",
+    "defaultPrompt",
     "composerIcon",
     "logo",
 }
@@ -38,7 +45,7 @@ def main() -> None:
 
     require(isinstance(interface, dict), "plugin interface must be an object")
     require(manifest["name"] == "develoop", "plugin name mismatch")
-    require(manifest["version"] == "0.1.2", "submission version mismatch")
+    require(manifest["version"] == "0.1.3", "submission version mismatch")
     require(
         manifest["license"] == "MIT AND CC-BY-NC-SA-4.0",
         "mixed-license declaration mismatch",
@@ -55,8 +62,13 @@ def main() -> None:
     )
     require(bool(interface["longDescription"]), "long description is required")
 
-    for key in ("websiteURL", "privacyPolicyURL", "termsOfServiceURL"):
+    for key in ("websiteURL", "supportURL", "privacyPolicyURL", "termsOfServiceURL"):
         require(interface[key].startswith("https://"), f"{key} must use HTTPS")
+    require(
+        1 <= len(interface["defaultPrompt"]) <= 3
+        and all(0 < len(prompt) <= 128 for prompt in interface["defaultPrompt"]),
+        "provide up to three starter prompts, each at most 128 characters",
+    )
     for key in ("composerIcon", "logo"):
         require((PLUGIN / interface[key]).is_file(), f"missing asset: {interface[key]}")
 
@@ -143,6 +155,16 @@ def main() -> None:
             require(
                 set(archived_manifest["interface"]) == OPENAI_INTERFACE_FIELDS,
                 "OpenAI bundle interface must contain only portal-supported fields",
+            )
+            require(
+                archived_manifest["interface"]
+                == {key: interface[key] for key in OPENAI_INTERFACE_FIELDS},
+                "OpenAI bundle must preserve the submitted listing metadata",
+            )
+            require(
+                archived_manifest["extensions"]["com.openai"]["publication"]["release_notes"]
+                == RELEASE_NOTES.read_text(encoding="utf-8").strip(),
+                "OpenAI bundle must include the current release notes",
             )
             require(
                 bundle.getinfo(".codex-plugin/plugin.json").internal_attr & 1 == 1,
