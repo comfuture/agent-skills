@@ -58,6 +58,7 @@ description: Create high-quality GitHub issues or issue drafts from repository e
                 (codex_home / "retired-skills" / "issue-creator" / "SKILL.md").is_file()
             )
             self.assertTrue((codex_home / "skills" / "gh-create-issue" / "SKILL.md").is_file())
+            self.assertTrue((codex_home / "skills" / "workspace-cleanup" / "SKILL.md").is_file())
             self.assertTrue((unrelated / "SKILL.md").is_file())
 
     def test_dry_run_reports_archive_without_moving_it(self) -> None:

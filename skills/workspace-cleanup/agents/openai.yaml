@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workspace Cleanup"
+  short_description: "Plan and verify task-owned workspace cleanup"
+  default_prompt: "Use $workspace-cleanup to inspect this task's temporary worktrees, files and build output and show me what can be removed."

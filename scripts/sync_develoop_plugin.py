@@ -18,6 +18,7 @@ EXPECTED_SKILLS = {
     "gh-autoreview-resolve",
     "gh-create-issue",
     "gh-implement-issue",
+    "workspace-cleanup",
     "writing-strategy",
 }
 IGNORED_NAMES = {"__pycache__"}

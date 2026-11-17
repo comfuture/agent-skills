@@ -2,4 +2,5 @@ cleanup-slops
 gh-autoreview-resolve
 gh-create-issue
 gh-implement-issue
+workspace-cleanup
 writing-strategy

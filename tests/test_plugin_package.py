@@ -3,7 +3,9 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -12,6 +14,33 @@ PLUGIN = ROOT / "plugins" / "develoop"
 
 
 class DeveloopPluginPackageTests(unittest.TestCase):
+    def test_workspace_skill_is_discoverable_in_reproducible_bundle(self) -> None:
+        skill = Path("skills/workspace-cleanup")
+        with tempfile.TemporaryDirectory() as temporary:
+            archive = Path(temporary) / "bundle.zip"
+            build = [
+                sys.executable, "scripts/build_develoop_openai_bundle.py",
+                "--output", str(archive),
+            ]
+            subprocess.run(build, cwd=ROOT, check=True, capture_output=True)
+            first = archive.read_bytes()
+            with zipfile.ZipFile(archive) as bundle:
+                manifest = json.loads(bundle.read(".codex-plugin/plugin.json"))
+                self.assertEqual(Path(manifest["skills"]) / skill.name, skill)
+                self.assertIn(str(skill / "SKILL.md"), bundle.namelist())
+                for path in (ROOT / skill).rglob("*"):
+                    if (not path.is_file() or path.name == ".DS_Store"
+                            or path.suffix == ".pyc" or "__pycache__" in path.parts):
+                        continue
+                    name = path.relative_to(ROOT).as_posix()
+                    with self.subTest(name=name):
+                        self.assertEqual(bundle.read(name), path.read_bytes())
+                        archived_mode = bundle.getinfo(name).external_attr >> 16
+                        expected_exec = 0o111 if path.stat().st_mode & 0o111 else 0
+                        self.assertEqual(archived_mode & 0o111, expected_exec)
+            subprocess.run(build, cwd=ROOT, check=True, capture_output=True)
+            self.assertTrue(archive.read_bytes() == first, "bundle bytes changed on rebuild")
+
     def test_plugin_skill_payload_is_in_sync(self) -> None:
         result = subprocess.run(
             [sys.executable, "scripts/sync_develoop_plugin.py", "--check"],
