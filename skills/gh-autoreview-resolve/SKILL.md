@@ -123,6 +123,8 @@ If merge was requested:
 
 If merge was not requested, stop at the verified ready-to-merge state.
 
+At closeout, account for any temporary checkout, observer or scratch output created for this review. Use `workspace-cleanup` when available to verify ownership and preserve evidence before any authorized removal.
+
 ## Inspection script
 
 Run from this skill directory:

@@ -26,6 +26,7 @@ test("renders Develoop and the four installation paths", async () => {
   assert.match(html, /gh-create-issue/);
   assert.match(html, /gh-implement-issue/);
   assert.match(html, /gh-autoreview-resolve/);
+  assert.match(html, /workspace-cleanup/);
   assert.match(
     html,
     /https:\/\/chatgpt\.com\/plugins\/plugins_6a69ee33e3048191ab7da89ec70dbbe2/,

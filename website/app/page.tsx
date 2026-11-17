@@ -25,6 +25,12 @@ const workflow = [
     title: "Resolve the review",
     body: "Run a bounded automated-review loop, validate every finding, prevent scope creep, and verify the final head.",
   },
+  {
+    index: "05",
+    skill: "workspace-cleanup",
+    title: "Clean up the workspace",
+    body: "Available in the source checkout. Inspect temporary worktrees, preserve local changes and verification receipts, and remove task-owned build output within the authorized scope.",
+  },
 ];
 
 const installs = [
@@ -104,7 +110,7 @@ export default function Home() {
         <section className="workflow-section" id="skills">
           <div className="section-heading">
             <p className="eyebrow">One deliberate loop</p>
-            <h2>Four skills. Clear handoffs.</h2>
+            <h2>Development workflow skills</h2>
             <p>
               Each skill can run independently. Together they preserve context
               across the places where GitHub work most often loses it.

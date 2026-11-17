@@ -10,6 +10,8 @@ Antigravity, and Agent Skills-compatible hosts.
 - `cleanup-slops`: find implicit state machines across a repository or PR and
   simplify redundant state without changing behavior.
 - `gh-autoreview-resolve`: run a bounded automated-review and resolution loop.
+- `workspace-cleanup`: plan and verify removal of task-owned intermediates,
+  worktrees and processes while preserving recoverable work and caches.
 - `writing-strategy`: separately licensed writing structure guidance included
   for bundle compatibility, but not part of Develoop's product positioning.
 
@@ -25,7 +27,8 @@ codex plugin add develoop@develoop
 ```
 
 Start a new task after installation. Invoke skills as `$gh-create-issue`,
-`$gh-implement-issue`, `$cleanup-slops`, and `$gh-autoreview-resolve`.
+`$gh-implement-issue`, `$cleanup-slops`, `$gh-autoreview-resolve`, and
+`$workspace-cleanup`.
 
 Start with `Use $cleanup-slops to find all of the implicit state machines in my
 app.` Supply a PR number or URL to limit cleanup to that implementation and its
@@ -53,7 +56,7 @@ Invoke installed skills by their frontmatter names, such as
 
 ### Standalone Agent Skills
 
-The repository root keeps the same five skills in the open Agent Skills layout:
+The repository root keeps the same six skills in the open Agent Skills layout:
 
 ```bash
 npx skills add comfuture/agent-skills --skill '*' --agent '*' -y

@@ -32,6 +32,7 @@ are examples, not hard dependencies.
    - For cross-repo changes, inspect the upstream contract before patching the downstream repo.
 
 3. Plan the branch and commit slices.
+   - Use the saved checkout and a branch by default. If a separate worktree is requested or necessary for isolation, record its owner and disposal condition.
    - Create or switch to the requested feature branch before editing.
    - Keep commits aligned with real task boundaries: core behavior, UI, docs, release/version, review fix.
    - If branch scope grows beyond its name or PR text, rename or update the branch/PR instead of letting metadata drift.
@@ -72,6 +73,7 @@ are examples, not hard dependencies.
 - Commands not run and why.
 - Unrelated dirty files left untouched.
 - Remaining risks or follow-up issues.
+- If the task created scratch files, build products, processes or a temporary checkout, use `workspace-cleanup` when available to account for them. Preserve deliverables and apply only authorized cleanup.
 
 ## Pitfalls
 
