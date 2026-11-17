@@ -28,11 +28,11 @@
     },
     {
       "id": "positive-4",
-      "title": "Resolve valid review feedback",
-      "prompt": "Validate the unresolved Codex review comments, fix the valid in-scope findings, and clean up the review threads.",
-      "expectedBehavior": "Reproduce each finding, classify its scope and validity, make the smallest coherent fix, add focused evidence, reply on the exact thread, and resolve only after the reply and validation. Normally finish after one focused verification re-review, but allow another when the preceding in-scope fix creates or exposes a concrete regression risk and the next request remains tied to the exact head and original scope.",
-      "expectedResult": "Valid in-scope feedback is fixed and evidenced; regression-driven review can continue until the concrete concern is cleared, while invalid, stale, or out-of-scope feedback is explained without silent resolution or scope creep.",
-      "validation": "plugins/develoop/skills/gh-autoreview-resolve/SKILL.md"
+      "title": "Resolve review feedback and clean up its temporary workspace",
+      "prompt": "Fix the valid review comments. After validation, remove our temporary review checkout and scratch files, and keep the verification receipt in the source project.",
+      "expectedBehavior": "Validate feedback against the PR, fix in-scope findings, reply on each thread and resolve it after verification. Hand off task-owned resources to workspace-cleanup. Inspect and revalidate the exact paths, Git recovery and incoming references, preserve the receipt and remove the authorized intermediates.",
+      "expectedResult": "Verified fixes and thread decisions, a recoverable branch, and a cleanup report listing measured footprint changes and the receipt path and hash.",
+      "validation": "tests/test_workspace_worktrees.py"
     },
     {
       "id": "positive-5",
@@ -54,11 +54,11 @@
     },
     {
       "id": "negative-2",
-      "title": "Do not merge without explicit authorization",
-      "prompt": "Review this pull request and resolve its comments.",
-      "expectedBehavior": "Complete the bounded review loop but stop at a verified ready-to-merge state because the request did not authorize merging or specify a reliably discoverable merge strategy.",
-      "why": "Review authorization does not implicitly authorize the irreversible repository transition of merging.",
-      "validation": "plugins/develoop/skills/gh-autoreview-resolve/SKILL.md"
+      "title": "Respect audit-only and review-only scope",
+      "prompt": "Review this pull request and resolve its comments. Audit disk usage of the old SDK checkout and shared Cargo output. A hidden sibling still uses the SDK path.",
+      "expectedBehavior": "Complete the scoped review. Report a read-only cleanup plan that identifies the incoming reference and shared Cargo output. Defer deletion and process shutdown. Leave merge to explicit authorization.",
+      "why": "A review and disk audit grant no authority to merge, disrupt another checkout, or clean shared build products.",
+      "validation": "plugins/develoop/skills/workspace-cleanup/SKILL.md"
     },
     {
       "id": "negative-3",

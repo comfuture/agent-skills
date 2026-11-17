@@ -2,7 +2,7 @@
 
 Develoop closes the loop on GitHub work with portable Agent Skills for
 evidence-backed issue creation, issue-to-PR implementation, behavior-preserving
-state cleanup, and bounded automated-review resolution.
+state cleanup, bounded automated-review resolution, and task-owned workspace cleanup.
 
 The same workflows are packaged for Codex, Claude Code, Antigravity, and the
 open Agent Skills layout. Each host uses its own GitHub integration, shell,
@@ -22,6 +22,8 @@ Public information, support, and policies are available at
   simplify redundant state while preserving behavior and essential transitions.
 - `gh-autoreview-resolve`: Run a bounded automated-review loop, validate
   findings, resolve in-scope feedback, and prevent review scope creep.
+- `workspace-cleanup`: Inspect temporary worktrees, build output and task-owned
+  processes, preserve recoverable work, and carry out authorized cleanup.
 
 The repository also includes `writing-strategy`, a separately licensed writing
 structure skill. It remains installable and bundled, but is intentionally not
@@ -44,7 +46,7 @@ and select **Add** after signing in.
 
 Start a new task after installation. Codex invokes skills as
 `$gh-create-issue`, `$gh-implement-issue`, `$cleanup-slops`, and
-`$gh-autoreview-resolve`.
+`$gh-autoreview-resolve`. The source checkout also includes `$workspace-cleanup`.
 
 Start a cleanup pass with:
 
@@ -54,6 +56,9 @@ Use $cleanup-slops to find all of the implicit state machines in my app.
 
 For a PR, specify its number or URL to keep cleanup within the implementation
 and its relevant dependencies.
+
+To inspect what a finished task left on disk, try
+`Use $workspace-cleanup to audit this task's worktrees and build output. Show me what depends on each path.`
 
 ### Claude Code
 
@@ -125,7 +130,8 @@ scripts/install.sh --dry-run
 
 Review the skills before installing them. They may read local repositories and
 GitHub state or, when the user authorizes it, create issues, branches, commits,
-pull requests, review replies, thread resolutions, and merges.
+pull requests, review replies, thread resolutions, and merges. Workspace cleanup
+can also remove explicitly scoped local files and stop task-owned processes.
 
 Develoop does not operate a backend or receive GitHub credentials. Your agent
 host, GitHub integration, GitHub CLI, and model provider process data under
@@ -190,7 +196,7 @@ uv run --with PyYAML python \
 
 ## License
 
-Repository code, scripts, supporting metadata, and the four development workflow
+Repository code, scripts, supporting metadata, and the development workflow
 skills are licensed under MIT unless otherwise stated. See `LICENSE`.
 
 The `writing-strategy` skill content is licensed separately under
