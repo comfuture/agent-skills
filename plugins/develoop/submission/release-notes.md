@@ -1,31 +1,16 @@
-# Develoop 0.1.3 — Behavior-preserving State Cleanup
+# Develoop 0.1.4 — Workspace cleanup
 
-Develoop 0.1.3 adds `cleanup-slops`, a cleanup workflow for implicit state
-machines across an entire repository or a specified pull request.
+Use `workspace-cleanup` to see which temporary worktrees, scratch files,
+build products and processes a task left behind. An audit reports what still
+depends on each path, what to preserve, and which actions are authorized.
 
-Highlights:
+- Find incoming references from hidden worktrees and preserve local-only
+  commits, private configuration and verification artifacts before removal.
+- Inspect process ownership and open files before stopping a task. Check
+  for shared Cargo output and active builds while preserving dependency caches.
+- Recheck each scratch file against its recorded identity before removal so an
+  interrupted cleanup can resume without deleting a replacement file.
+- Account for temporary resources at the end of implementation and review.
 
-- Starts from “find all of the implicit state machines in my app” and traces
-  state ownership, reachable combinations, transitions, consumers, and invariants.
-- Removes redundant sources of truth while preserving independent state axes,
-  async request ownership, public APIs, and persisted representations.
-- Establishes baseline behavior and focused regression evidence before editing,
-  with decision examples for essential and unnecessary state.
-- Keeps PR cleanup within the implementation and its relevant dependencies,
-  reporting preserved or deferred candidates and uninspected areas.
-- Preserves category, capabilities, public support links, starter prompts, and
-  release notes in the OpenAI submission ZIP.
-- Records the UTC time and full head before marking a draft ready, and reuses
-  existing trigger evidence when a PR is already ready.
-- Retains the head-aware, causally bounded automated-review guidance from 0.1.2.
-
-Reviewer notes:
-
-- Submission type: Skills only
-- Version: 0.1.3
-- Publisher: Changkyun Kim
-- Category: Developer Tools
-- Support: https://develoop.comfuture.chatgpt.site/support
-- Validation: 36 repository regression tests, seven website route tests, and
-  independent repository-wide and PR-scoped cleanup exercises
-- License: MIT AND CC-BY-NC-SA-4.0
+The package includes six skills for Codex, Claude Code, Antigravity and
+standalone Agent Skills hosts.

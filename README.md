@@ -45,8 +45,8 @@ Or install it from the OpenAI Curated Directory:
 and select **Add** after signing in.
 
 Start a new task after installation. Codex invokes skills as
-`$gh-create-issue`, `$gh-implement-issue`, `$cleanup-slops`, and
-`$gh-autoreview-resolve`. The source checkout also includes `$workspace-cleanup`.
+`$gh-create-issue`, `$gh-implement-issue`, `$cleanup-slops`,
+`$gh-autoreview-resolve`, and `$workspace-cleanup`.
 
 Start a cleanup pass with:
 

@@ -29,7 +29,7 @@ const workflow = [
     index: "05",
     skill: "workspace-cleanup",
     title: "Clean up the workspace",
-    body: "Available in the source checkout. Inspect temporary worktrees, preserve local changes and verification receipts, and remove task-owned build output within the authorized scope.",
+    body: "Inspect temporary worktrees, preserve local changes and verification receipts, and remove task-owned build output within the authorized scope.",
   },
 ];
 
