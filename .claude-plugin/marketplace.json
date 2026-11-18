@@ -6,13 +6,13 @@
     "email": "comfuture@gmail.com"
   },
   "description": "Portable GitHub workflows for issues, implementation, refactoring, review, and workspace cleanup.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "plugins": [
     {
       "name": "develoop",
       "source": "./plugins/develoop",
       "description": "Create GitHub issues, ship validated pull requests, simplify implicit state machines, resolve review feedback, and clean up task-owned workspaces.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Changkyun Kim",
         "email": "comfuture@gmail.com"

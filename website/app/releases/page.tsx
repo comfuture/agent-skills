@@ -10,6 +10,19 @@ export default function ReleasesPage() {
       title="Release Notes"
       subtitle="Public Develoop release history"
     >
+      <p className="release-tag">Workspace cleanup</p>
+      <h2>Develoop 0.1.4</h2>
+      <p>
+        Use <code>workspace-cleanup</code> to audit temporary worktrees, files,
+        processes and build output. The plan identifies which tasks still use
+        each resource and what needs to be preserved before removal.
+      </p>
+      <ul>
+        <li>Check hidden worktree dependencies and recover local-only commits.</li>
+        <li>Identify active processes and shared Cargo output before cleanup.</li>
+        <li>Recheck each planned scratch file before removing it on retry.</li>
+      </ul>
+      <hr />
       <p className="release-tag">Behavior-preserving state cleanup</p>
       <h2>Develoop 0.1.3</h2>
       <p>
